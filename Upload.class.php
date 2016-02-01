@@ -1,5 +1,14 @@
 <?php
 
+
+	/**
+	 *	Copyright Eden Reich ©. all rights reserved.
+	 * 
+	 */
+
+
+
+
 class Upload
 {
 	private $_fileData = array(),
