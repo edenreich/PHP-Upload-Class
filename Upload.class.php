@@ -1,13 +1,9 @@
 <?php
 
-
-	/**
-	 *	Copyright Eden Reich ©. all rights reserved.
-	 * 
-	 */
-
-
-
+/**
+ *	Copyright Eden Reich ©. all rights reserved.
+ * 
+ */
 
 class Upload
 {
@@ -18,9 +14,11 @@ class Upload
 			$_fileSize,
 			$_filePath,
 			$_errors = array(),
-			$_originFileName;
+			$_changedFileName,
+			$_allowedExtentions = array();
 	
 	public	$isMultiple = false;
+			
 			
 
 	/**
@@ -32,11 +30,6 @@ class Upload
 	{
 		if( isset($_FILES['file']) && $_FILES['file']['size'] > 0 )
 		{
-			$this->_fileData = $_FILES['file'];
-			$this->_filePath = __DIR__ . DIRECTORY_SEPARATOR;
-
-			
-
 			if( count( $_FILES['file']['name'] ) > 1 )
 			{
 				$this->_fileName = $_FILES['file']['name'];
@@ -51,7 +44,10 @@ class Upload
 				$this->_fileSize = $_FILES['file']['size'][0];
 				$this->isMultiple = false;
 			}
-				$this->_fileExtention = $this->getFileExtention();
+
+			$this->_fileData = $_FILES['file'];
+			$this->_filePath = __DIR__ . DIRECTORY_SEPARATOR;
+			$this->_fileExtention = $this->getFileExtention();
 		}
 	}
 
@@ -98,7 +94,7 @@ class Upload
 	 *
 	 */
 
-	public function getFileExtention()
+	protected function getFileExtention()
 	{
 		if( $this->isMultiple === true )
 		{
@@ -139,7 +135,14 @@ class Upload
 
 	public function getFilePath()
 	{
-		return $this->_filePath;
+		if( file_exists( $this->_filePath ) )
+		{
+			return $this->_filePath;
+		}
+		else
+		{
+			echo "Sorry, but this path does not exists. You should create it first or use createFoldersIfNotExists() before that command.<br>";
+		}
 	}
 
 	/**
@@ -169,30 +172,57 @@ class Upload
 	{
 		if( !empty( $this->_fileData ) )
 		{
-			if ( $this->isMultiple )
+			if( file_exists( $this->_filePath ) )
 			{
-				foreach ($_FILES['file']['error'] as $key => $error) 
+				if ( $this->isMultiple )
 				{
-				    if ( $error == UPLOAD_ERR_OK ) 
-				    {
-				        move_uploaded_file( $this->_fileTempName[ $key ], $this->_filePath . $this->_fileName[ $key ] );
-				    }
-				    else
-				    {
-				    	$this->_errors[] = 'Invalid File: ' . $this->_originFileName[ $key ] . ".<br>"; 
-				    }
+					foreach ( $_FILES['file']['error'] as $key => $error ) 
+					{
+					    if ( $error == UPLOAD_ERR_OK ) 
+					    {
+					    	if( $this->validatePasses() )
+					    	{
+						        if ( !empty($this->_changedFileName) )
+								{
+						       		move_uploaded_file( $this->_fileTempName[ $key ], $this->_filePath . $this->_changedFileName[ $key ] );
+						    	}
+						    	else
+						    	{
+						    		move_uploaded_file( $this->_fileTempName[ $key ], $this->_filePath . $this->_fileName[ $key ] );
+						    	}
+					    	}
+					    }
+					    else
+					    {
+					    	$this->_errors[] = "Invalid File: " . $this->_fileName[ $key ] . ".<br>"; 
+					    }
+					}
+				}
+				else
+				{
+					if( $_FILES['file']['error'][0] == UPLOAD_ERR_OK )
+					{
+						if( $this->validatePasses() )
+						{
+							if ( !empty($this->_changedFileName) )
+							{
+								move_uploaded_file( $this->_fileTempName, $this->_filePath . $this->_changedFileName );
+							}
+							else
+							{
+								move_uploaded_file( $this->_fileTempName, $this->_filePath . $this->_fileName );
+							}
+						}
+					}
+					else
+					{
+						$this->_errors[] = "Invalid File.<br>";
+					}
 				}
 			}
 			else
 			{
-				if( $_FILES['file']['error'][0] == UPLOAD_ERR_OK )
-				{
-					move_uploaded_file( $this->_fileTempName, $this->_filePath . $this->_fileName );
-				}
-				else
-				{
-					$this->_errors[] = "Invalid File.<br>";
-				}
+				echo "Sorry, but this path does not exists. You should create it first or use createFoldersIfNotExists() before that command.<br>";
 			}
 		}
 	}
@@ -202,7 +232,7 @@ class Upload
 	 *
 	 */
 
-	public function generateFileNames()
+	public function generateFileName()
 	{
 		if( !empty( $this->_fileData ) )
 		{
@@ -212,16 +242,14 @@ class Upload
 				{
 					$randomName = uniqid();
 					$extention = $this->_fileExtention[ $key ];
-					$this->_originFileName[ $key ] = $this->_fileName[ $key ];
-					$this->_fileName[ $key ] = $randomName . "." . $extention;
+					$this->_changedFileName[ $key ] = $randomName . "." . $extention;
 				}
 			}
 			else
 			{
 				$randomName = uniqid();
 				$extention = $this->_fileExtention;
-				$this->_originFileName = $this->_fileName;
-				$this->_fileName = $randomName . "." . $extention;
+				$this->_changedFileName = $randomName . "." . $extention;
 			}
 		}
 	}
@@ -236,5 +264,104 @@ class Upload
 	public function uploadErrors()
 	{
 		return $this->_errors;
-	}	
+	}
+
+	/**
+	 *	Get the generated name/names of the file/files
+	 *
+	 *	@return String or Array
+	 *
+	 */
+
+	public function getGeneratedFileName()
+	{
+		return $this->_changedFileName;
+	}
+
+	/**
+	 *	Creates the directories of the paths if they are not exists
+	 *
+	 */
+
+	public function createFoldersIfNotExists()
+	{
+		if( !file_exists( $this->_filePath ) )
+		{
+			mkdir( $this->_filePath );
+		}
+	}
+
+	/**
+	 *	Set the extentions you want to allow for upload.
+	 *
+	 *	@param Array
+	 *
+	 */
+
+	public function setAllowedExtentions( $extentions = array() )
+	{
+		$this->_allowedExtentions = $extentions;
+	}
+
+	/**
+	 * 	Check if extentions allowed
+	 *
+	 *	@return Boolean
+	 *
+	 */
+
+	protected function extentionsAllowed()
+	{
+		if( !empty( $this->_allowedExtentions ) && !empty( $this->_fileExtention ) )
+		{
+			if( $this->isMultiple === true )
+			{
+				foreach( $this->_fileExtention as $extention )
+				{
+					if( in_array( $extention, $this->_allowedExtentions ) )
+					{
+						return true;
+					}
+					else
+					{
+						$this->_errors[] = "Sorry, but only " . implode( ", " , $this->_allowedExtentions ) . " files are allowed.";
+						return false;
+					}
+				}
+			}
+			else
+			{
+				if( in_array( $this->_fileExtention, $this->_allowedExtentions ) )
+				{
+					return true;
+				}
+				else
+				{
+					$this->_errors[] = "Sorry, but only " . implode( ", " , $this->_allowedExtentions ) . " files are allowed.";
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * 	Check if file validation passes
+	 *
+	 *	@return Boolean
+	 *
+	 */
+
+	protected function validatePasses()
+	{
+		if( $this->extentionsAllowed() )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}		
 }
