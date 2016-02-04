@@ -14,15 +14,15 @@ $upload->setAllowedExtentions( array('jpg') ); // set an array of allowed file e
 
 $upload->generateFileName(); // only if you want to have a different file names
 
-if( empty( $upload->uploadErrors() ) ) // check wether there are errors 
-{ 
-	$upload->save(); // start the upload proccess and save the file(s)
-}
-else
-{
-	$errors = $upload->uploadErrors(); // get all the errors that stored in array
-	foreach( $errors as $error )
-	{
-		echo $error; // output the errors
-	}
-}
+if( empty( $upload->uploadErrors() ) ) // check wether there are errors<br> 
+{<br> 
+	$upload->save(); // start the upload proccess and save the file(s)<br>
+}<br>
+else<br>
+{<br>
+	$errors = $upload->uploadErrors(); // get all the errors that stored in array<br>
+	foreach( $errors as $error )<br>
+	{<br>
+		echo $error; // output the errors<br>
+	}<br>
+}<br>
