@@ -15,7 +15,8 @@ class Upload
 			$_filePath,
 			$_errors = array(),
 			$_changedFileName,
-			$_allowedExtentions = array();
+			$_allowedExtentions = array(),
+			$_maxSize;
 	
 	public	$isMultiple = false;
 			
@@ -346,6 +347,54 @@ class Upload
 		return true;
 	}
 
+
+	public function setMaxSize( $maxSize )
+	{
+		$this->_maxSize = $maxSize;
+	}
+
+	/**
+	 * 	Check if the file size allowed
+	 *
+	 *	@return Boolean
+	 *
+	 */
+
+	protected function maxSizeOk()
+	{
+		if( !empty($this->_maxSize) && !empty($this->_fileSize) )
+		{
+			if( $this->isMultiple === true )
+			{
+				foreach( $this->_fileSize as $key => $fileSize)
+				{
+					if( $fileSize < $this->_maxSize )
+					{
+						return true;
+					}
+					else
+					{
+						$this->_errors[] = "Sorry, but your file, " . $this->_fileName[ $key ] . ", is too big. maximal size allowed " . $this->_maxSize . " Kbyte";
+						return false;
+					}
+
+				}
+			}
+			else
+			{
+				if( $this->_fileSize < $this->_maxSize )
+				{
+					return true;
+				}
+				else
+				{
+					$this->_errors[] = "Sorry, but your file is too big. maximal size allowed " . $this->_maxSize . " Kbyte";
+					return false;
+				}
+			}
+		}
+	}
+
 	/**
 	 * 	Check if file validation passes
 	 *
@@ -355,7 +404,7 @@ class Upload
 
 	protected function validatePasses()
 	{
-		if( $this->extentionsAllowed() )
+		if( $this->extentionsAllowed() && $this->maxSizeOk() )
 		{
 			return true;
 		}
