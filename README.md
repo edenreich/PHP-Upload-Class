@@ -8,39 +8,38 @@ Php Class for uploading file or files to the server
 
 ###### *instatiate the class*
 
-```
+```ruby
 $upload = new Upload(); 
 ```
 
 
 ###### *set the directory where you want to upload the files, by default it will upload to your main directroy*
 
-```
+```ruby
 $upload->setPath('img/'); 
 ```
 
 
 ###### *set an array of allowed file extentions, by default every file type allowed*
 
-```
-$upload->setAllowedExtentions( array('jpg') );
+```ruby
+$upload->setAllowedExtentions( array('jpg', 'png') );
 ```
 
 
-###### *only if you want to have a different file names*
+###### *set this only if you want to have a random file names*
 
-```
+```ruby
 $upload->generateFileName();
 ```
 
 
 ###### *check wether there are errors*
 
-```
+```ruby
 if( empty( $upload->uploadErrors() ) ) 
 {
   // start the upload proccess and save the file(s)
-
   $upload->save(); 
 }
 else
