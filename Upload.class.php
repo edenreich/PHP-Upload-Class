@@ -393,6 +393,8 @@ class Upload
 				}
 			}
 		}
+
+		return true;
 	}
 
 	/**
