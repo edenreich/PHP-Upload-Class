@@ -1,79 +1,104 @@
 <?php
 
-/**
- *	Copyright Eden Reich ©. all rights reserved.
- * 
- */
 
+/*
+|--------------------------------------------------------------------------
+| Upload Class 
+|--------------------------------------------------------------------------
+| This class handle uploading of files
+| 
+|
+*/
 class Upload
 {
-	private $_fileData = array(),
-			$_fileName,
-			$_fileTempName,
-			$_fileExtention,
-			$_fileSize,
-			$_filePath,
-			$_errors = array(),
-			$_changedFileName,
-			$_allowedExtentions = array(),
-			$_maxSize;
+	protected $_fileInput = array();
 	
-	public	$isMultiple = false;
+	protected $_fileNames = array();
+	
+	protected $_fileTempNames = array();
 			
+	protected $_fileExtensions = array();
 			
+	protected $_fileSizes = array();
+
+	protected $_directoryPath = '';
+
+	protected $_errors = array();
+
+	protected $_encryptedFileNames = array();
+
+	protected $_allowedExtensions = array();
+
+	protected $_maxSize = null;
+	
+	protected $isMultiple = false;
+			
+	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12'; // Please set your key for encryption here
 
 	/**
-	 *	Set all the attributes with file data and check if it's single or multiple upload 
-	 * 
+	 * Setting all the attributes with file data and check if it's single or multiple upload 
 	 */
-
 	public function __construct()
 	{
-		if( isset($_FILES['file']) && $_FILES['file']['size'] > 0 )
-		{
-			if( count( $_FILES['file']['name'] ) > 1 )
-			{
-				$this->_fileName = $_FILES['file']['name'];
-				$this->_fileTempName = $_FILES['file']['tmp_name'];
-				$this->_fileSize = $_FILES['file']['size'];
-				$this->isMultiple = true;
-			}
-			else
-			{
-				$this->_fileName = $_FILES['file']['name'][0];
-				$this->_fileTempName = $_FILES['file']['tmp_name'][0];
-				$this->_fileSize = $_FILES['file']['size'][0];
-				$this->isMultiple = false;
-			}
+		$this->_fileInput = $_FILES['file'];
 
-			$this->_fileData = $_FILES['file'];
-			$this->_filePath = __DIR__ . DIRECTORY_SEPARATOR;
-			$this->_fileExtention = $this->getFileExtention();
-		}
+		$this->isMultiple = $this->isMultiple($this->_fileInput);
+		
+		$this->_fileNames = $this->_fileInput['name'];
+		$this->_fileTempNames = $this->_fileInput['tmp_name'];
+		$this->_fileSizes = $this->_fileInput['size'];
+
+		$this->setDirectory('/images');
+		$this->_fileExtensions = $this->getFileExtensions();
+	}
+
+	/**
+	 * This method check if the file is set. normally when the user submits the form.
+	 */
+	public static function formIsSubmitted()
+	{
+		if(empty($_FILES))
+			return false;
+
+		if($_FILES['file']['size'] <= 0)
+			return false;
+		
+		return true;
+	}
+
+	/**
+	 * This method checks if its files or file.
+	 *
+	 * @param Array | $input
+	 * 
+	 * @return Boolean
+	 */
+	protected function isMultiple(Array $input)
+	{
+		if(count($_FILES['file']['name']) > 1)
+			return true;
+		
+		return false;
 	}
 
 	/**
 	 *	Get the file data array
 	 *
-	 *	@return Array 
-	 *
+	 * @return Array | $this->_fileInput
 	 */
-
 	public function getFileData()
 	{
-		return $this->_fileData;
+		return $this->_fileInput;
 	}
 
 	/**
-	 *	Get the name/names of the file/files
+	 * Get the name/names of the file/files
 	 *
-	 *	@return String or Array
-	 *
+	 * @return String or Array
 	 */
-
-	public function getFileName()
+	public function getFileName($index)
 	{
-		return $this->_fileName;
+		return $this->_fileNames[$index];
 	}
 
 	/**
@@ -82,46 +107,35 @@ class Upload
 	 *	@return String or Array
 	 *
 	 */
-
 	public function getFileTempName()
 	{
 		return $this->_fileTempName;
 	}
 
 	/**
-	 *	Get the extention/extentions of the file/files
+	 * Get the extention/extentions of the file/files
 	 *
-	 *	@return String or Array
-	 *
+	 * @return String or Array
 	 */
-
-	protected function getFileExtention()
+	protected function getFileExtensions()
 	{
-		if( $this->isMultiple === true )
+		$extensions = array();
+
+		foreach($this->_fileNames as $filename)
 		{
-			foreach ( $this->_fileName as $filename )
-			{
-				$str = end( explode( '.', $filename ) );
-				$extn = strtolower( $str );
-				$this->_fileExtention[] = $extn;
-			}
-			return $this->_fileExtention;
+			$str = end(explode('.', $filename));
+			$extension = strtolower($str);
+			$extensions[] = $extension;
 		}
-		else
-		{
-			$str = end( explode( '.', $this->_fileName ) );
-			$this->_fileExtention = strtolower( $str );
-			return $this->_fileExtention;
-		}
+		return $extensions;
+
 	}
 
 	/**
-	 *	Get the size/sizes of the file/files
+	 * Get the size/sizes of the file/files
 	 *
-	 *	@return Integer or Array
-	 *
+	 * @return Integer or Array
 	 */
-
 	public function getFileSize()
 	{
 		return $this->_fileSize;
@@ -131,226 +145,207 @@ class Upload
 	 *	Get the path/paths of the file/files
 	 *
 	 *	@return String or Array
-	 *
 	 */
-
-	public function getFilePath()
+	public function getUploadDirectory()
 	{
-		if( file_exists( $this->_filePath ) )
+		if(!file_exists($this->_directoryPath))
 		{
-			return $this->_filePath;
+			echo "Sorry, but this directory does not exist yet. You should create it first or use createFoldersIfNotExists() before that command.<br>";
+			return;
 		}
+
+		return $this->_directoryPath;
+	}
+
+	/**
+	 * Set the path directory where you want to upload the files(if not specfied file/files 
+	 * will be uploaded to the current directory)
+	 *
+	 * @param String
+	 *
+	 * @return Object | $this
+	 */
+	public function setDirectory($path)
+	{
+		if(substr($path , -1) == '/')
+			$this->_directoryPath = $path;
 		else
-		{
-			echo "Sorry, but this path does not exists. You should create it first or use createFoldersIfNotExists() before that command.<br>";
-		}
+			$this->_directoryPath = $path . '/';
+
+		return $this;
 	}
 
 	/**
-	 *	Set the path directory where you want to upload the files(if not specfied file/files will be uploaded to the current directory)
+	 * Set the extensions you want to allow for upload.
 	 *
-	 *	@param String
+	 * @param Array
 	 *
+	 * @return Object | $this
 	 */
-
-	public function setFilePath( $path )
+	public function setAllowedExtentions(Array $extensions = array())
 	{
-		if( substr( $path , -1 ) == '/' )
-		{
-			$this->_filePath = $path;
-		}
-		else
-		{
-			$this->_filePath = $path . '/';
-		}
+		$this->_allowedExtensions = $extensions;
+
+		return $this;
 	}
 
 	/**
-	 *	Save the file/files with the original name on the server
+	 * Set the Size of the files allowed to upload
+	 *
+	 * @param Integer | $maxSize
+	 * 
+	 * @return Object | $this;
 	 */
-
-	public function save()
+	public function setMaxSize($maxSize)
 	{
-		if( !empty( $this->_fileData ) )
-		{
-			if( file_exists( $this->_filePath ) )
-			{
-				if ( $this->isMultiple )
-				{
-					foreach ( $_FILES['file']['error'] as $key => $error ) 
-					{
-					    if ( $error == UPLOAD_ERR_OK ) 
-					    {
-					    	if( $this->validatePasses() )
-					    	{
-						        if ( !empty($this->_changedFileName) )
-								{
-						       		move_uploaded_file( $this->_fileTempName[ $key ], $this->_filePath . $this->_changedFileName[ $key ] );
-						    	}
-						    	else
-						    	{
-						    		move_uploaded_file( $this->_fileTempName[ $key ], $this->_filePath . $this->_fileName[ $key ] );
-						    	}
-					    	}
-					    }
-					    else
-					    {
-					    	$this->_errors[] = "Invalid File: " . $this->_fileName[ $key ] . ".<br>"; 
-					    }
-					}
-				}
-				else
-				{
-					if( $_FILES['file']['error'][0] == UPLOAD_ERR_OK )
-					{
-						if( $this->validatePasses() )
-						{
-							if ( !empty($this->_changedFileName) )
-							{
-								move_uploaded_file( $this->_fileTempName, $this->_filePath . $this->_changedFileName );
-							}
-							else
-							{
-								move_uploaded_file( $this->_fileTempName, $this->_filePath . $this->_fileName );
-							}
-						}
-					}
-					else
-					{
-						$this->_errors[] = "Invalid File.<br>";
-					}
-				}
-			}
-			else
-			{
-				echo "Sorry, but this path does not exists. You should create it first or use createFoldersIfNotExists() before that command.<br>";
-			}
-		}
+		$this->_maxSize = $maxSize;
+
+		return $this;
 	}
 
 	/**
-	 *	Save the file/files with the random name on the server(optional for security uses)
-	 *
+	 * start the upload process
 	 */
-
-	public function generateFileName()
+	public function start()
 	{
-		if( !empty( $this->_fileData ) )
+		if(empty($this->_fileInput))
+			return;
+
+
+		if(!file_exists($this->_directoryPath))
 		{
-			if ( $this->isMultiple )
-			{
-				foreach($this->_fileName as $key => $fileName)
-				{
-					$randomName = uniqid();
-					$extention = $this->_fileExtention[ $key ];
-					$this->_changedFileName[ $key ] = $randomName . "." . $extention;
-				}
-			}
-			else
-			{
-				$randomName = uniqid();
-				$extention = $this->_fileExtention;
-				$this->_changedFileName = $randomName . "." . $extention;
-			}
+			echo 'Sorry, but this path does not exists. you can also set $this->createDirectory(true)' . "<br>";
+			return;
 		}
+			
+		foreach($this->_fileInput['error'] as $key => $error) 
+		{
+		    if($error == UPLOAD_ERR_OK) 
+		    {
+		    	if($this->validatePasses())
+		    	{
+			        if (!empty($this->_encryptedFileNames))
+					{
+			       		move_uploaded_file($this->_fileTempNames[$key], $this->_directoryPath . $this->_encryptedFileNames[$key]);
+			    	}
+			    	else
+			    	{
+			    		move_uploaded_file($this->_fileTempNames[$key], $this->_directoryPath . $this->_fileNames[$key]);
+			    	}
+		    	}
+		    }
+		    else
+		    {
+		    	$this->_errors[] = "Invalid File: " . $this->_fileName[ $key ] . ".<br>"; 
+		    }
+		}	
 	}
 
 	/**
-	 *	Get the Errors array
+	 * This method decrypt the file name based on the key you specfied.
 	 *
-	 *	@return Array  
-	 *
+	 * @param $encryptedName
+	 * 
+	 * @return String | Decrypted File Name 
 	 */
+	public function decryptFileName($encryptedName)
+	{
+		return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, static::KEY, base64_decode($encryptedCode), MCRYPT_MODE_ECB));
+	}
 
+	/**
+	 * Save the file/files with the random name on the server(optional for security uses).
+	 *
+	 * @param Boolean | $generate
+	 *
+	 * @return Object | $this
+	 */
+	public function encryptFileNames($encrypt = false)
+	{
+		if($encrypt == false)
+			return $this;
+
+		if(empty(static::KEY))
+		{
+			echo 'Please go to Upload.class.php file and set manually a key inside the const KEY of 32 characters to encrypt your files. keep this key in safe place as well. you can call $this->generateMeAKey() to generate a random 32 characters key';
+			return;
+		}	
+		
+		if(!empty($this->_fileInput))
+		{
+			foreach($this->_fileNames as $key => $fileName)
+			{
+				$encryptedName = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, static::KEY, $fileName, MCRYPT_MODE_ECB)));
+				$extention = $this->_fileExtensions[ $key ];
+				$this->_encryptedFileNames[ $key ] = $encryptedName . "." . $extention;
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Get the Errors array
+	 *
+	 * @return Array  
+	 */
 	public function uploadErrors()
 	{
 		return $this->_errors;
 	}
 
 	/**
-	 *	Get the generated name/names of the file/files
+	 * Get the generated name/names of the file/files
 	 *
-	 *	@return String or Array
-	 *
+	 * @return String or Array
 	 */
-
 	public function getGeneratedFileName()
 	{
-		return $this->_changedFileName;
+		return $this->_encryptedFileNames;
 	}
 
 	/**
-	 *	Creates the directories of the paths if they are not exists
+	 * This method create the directory if needed
+	 * 
+	 * @param Boolean | $create
 	 *
+	 * @return Object | $this
 	 */
-
-	public function createFoldersIfNotExists()
+	public function createDirectory($create = false)
 	{
-		if( !file_exists( $this->_filePath ) )
-		{
-			mkdir( $this->_filePath );
-		}
+		if($create == false)
+			return $this;
+
+		if(!file_exists($this->_directoryPath))
+			mkdir($this->_directoryPath);	
+	
+		return $this;
 	}
 
 	/**
-	 *	Set the extentions you want to allow for upload.
+	 * Check if extentions allowed
 	 *
-	 *	@param Array
-	 *
+	 * @return Boolean
 	 */
-
-	public function setAllowedExtentions( $extentions = array() )
-	{
-		$this->_allowedExtentions = $extentions;
-	}
-
-	/**
-	 * 	Check if extentions allowed
-	 *
-	 *	@return Boolean
-	 *
-	 */
-
 	protected function extentionsAllowed()
 	{
-		if( !empty( $this->_allowedExtentions ) && !empty( $this->_fileExtention ) )
+		if(empty($this->_allowedExtensions) && empty($this->_fileExtensions))
+			return;
+
+		foreach( $this->_fileExtensions as $extention )
 		{
-			if( $this->isMultiple === true )
+			if(in_array($extention, $this->_allowedExtensions))
 			{
-				foreach( $this->_fileExtention as $extention )
-				{
-					if( in_array( $extention, $this->_allowedExtentions ) )
-					{
-						return true;
-					}
-					else
-					{
-						$this->_errors[] = "Sorry, but only " . implode( ", " , $this->_allowedExtentions ) . " files are allowed.";
-						return false;
-					}
-				}
+				return true;
 			}
 			else
 			{
-				if( in_array( $this->_fileExtention, $this->_allowedExtentions ) )
-				{
-					return true;
-				}
-				else
-				{
-					$this->_errors[] = "Sorry, but only " . implode( ", " , $this->_allowedExtentions ) . " files are allowed.";
-					return false;
-				}
+				$this->_errors[] = "Sorry, but only " . implode( ", " , $this->_allowedExtensions ) . " files are allowed.";
+				return false;
 			}
 		}
-
+	
 		return true;
-	}
-
-
-	public function setMaxSize( $maxSize )
-	{
-		$this->_maxSize = $maxSize;
 	}
 
 	/**
@@ -359,7 +354,6 @@ class Upload
 	 *	@return Boolean
 	 *
 	 */
-
 	protected function maxSizeOk()
 	{
 		if( !empty($this->_maxSize) && !empty($this->_fileSize) )
@@ -398,15 +392,13 @@ class Upload
 	}
 
 	/**
-	 * 	Check if file validation passes
+	 * Check if file validation passes
 	 *
-	 *	@return Boolean
-	 *
+	 * @return Boolean
 	 */
-
 	protected function validatePasses()
 	{
-		if( $this->extentionsAllowed() && $this->maxSizeOk() )
+		if($this->extentionsAllowed() && $this->maxSizeOk())
 		{
 			return true;
 		}
@@ -414,5 +406,13 @@ class Upload
 		{
 			return false;
 		}
-	}		
+	}
+
+	/**
+	 * A simple gererator of a random key to use for encrypting 
+	 */
+	public function generateMeAKey()
+	{
+		echo md5(uniqid());
+	}
 }
