@@ -12,7 +12,7 @@ PHP Class for uploading file or files to the server
 
 
 
-##### make sure the form is submitted
+#### make sure the form is submitted
 
 ```php
 if(Upload::formIsSubmitted())
@@ -22,62 +22,63 @@ if(Upload::formIsSubmitted())
 ```
 
 
-##### instatiate the class
+#### instatiate the class
 
 ```php
 $upload = new Upload(YOUR-HTML-INPUT-NAME); 
 ```
 
 
-##### set the directory where you want to upload the files, by default it will upload to your main directroy
+#### set the directory where you want to upload the files, by default it will upload to your main directroy
 
 ```php
 $upload->setDirectory('img/'); 
 ```
-##### you may also specify that you want to create this directory if it's not exists
+#### you may also specify that you want to create this directory if it's not exists
 
 ```php
 $upload->setDirectory('img/')->create(true); 
 ```
 
 
-##### set an array of allowed file extensions, by default only 'jpg' and 'png' are allowed
+#### set an array of allowed file extensions, by default only 'jpg' and 'png' are allowed
 
 ```php
 $upload->setAllowedExtensions(array('jpg', 'png'));
 ```
 
 
-##### set the limit for upload size by Kilobyte, on the example under 2MB is allowed
+#### set the limit for upload size by Kilobyte, on the example under 2MB is allowed
 
 ```php
 $upload->setMaxSize(2000); // This will only take effect if your php.ini config file allow this size to be uploaded
 ```
 
 
-##### set this only if you want to have a encrypt file names(optional for security)
+#### set this only if you want to have a encrypt file names(optional for security)
 
 ```php
 $upload->encryptFileNames(true);
 ```
 
-##### you may also specify that you want only certain file type to be encrypted like so:
+#### you may also specify that you want only certain file type to be encrypted like so:
 
 ```php
 $upload->encryptFileNames(true)->only(array('jpg')); // only jpg files will be encrypted
 ```
 
 
-##### after all is set just run the following command
+#### after all is set just run the following command
 
 ```php
 $upload->start();
 ``` 
 
 
+
 ## Error Handling
 
-###### check wether there are errors and if there arent errors, proccess the upload
+#### check wether there are errors and if there arent errors, proccess the upload
 
 ```php
 if($upload->hasErrors())
@@ -95,15 +96,17 @@ if($upload->hasErrors())
 }
 ```
 
-###### here is another method to show you useful errors if something went wrong(normally if you didnt set the KEY)
+#### here is another method to show you useful errors if something went wrong(normally if you didnt set the KEY)
 
 ```php
 print_r($upload->errorsForDeveloper()); // There are some errors only you should look at while setting this up
 ```
 
-#### If you liked this script please feel to contact me so we can develop it further :-)
+### If you liked this script please feel to contact me so we can develop it further :-)
 
-#### Upcomming feautres:
 
-##### - A way to allow you to add you error custom messages(still thinking which syntax will be easy to use).
+
+## Upcomming feautres:
+
+##### - A way to allow you to add your custom error messages(still thinking which syntax will be easy to use).
 ##### - Nice method to display the errors easily with bootstrap design by calling $errorUpload->feedbackDisplay();
