@@ -1,82 +1,108 @@
-# upload.class.php
-Php Class for uploading file or files to the server
+# Upload.class.php
+PHP Class for uploading file or files to the server
 
 # How to use this class
 
-## you could use this class on your front-end simple as that:
+## Setting it up:
 
-###### *Please make sure your upload html input name is called 'file'*
-
-
-###### *instatiate the class*
-
-```php
-$upload = new Upload(); 
-```
+### Few things need to be done first:
+##### 1) Make sure you change the random 32 Character key inside the class file.
+##### 2) You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
+##### 2) Please open the example index.php file I created to follow and get a better understanding
 
 
-###### *set the directory where you want to upload the files, by default it will upload to your main directroy*
+###### make sure the form is submitted
 
 ```php
-$upload->setFilePath('img/'); 
-```
-
-
-###### *set an array of allowed file extentions, by default every file type allowed*
-
-```php
-$upload->setAllowedExtentions( array('jpg', 'png') );
-```
-
-
-###### *set the limit for upload size by Kilobyte, on the example under 2MB is allowed*
-
-```php
-$upload->setMaxSize( 2000000 );
-```
-
-
-###### *set this only if you want to have a random file names(optional)*
-
-```php
-$upload->generateFileName();
-```
-
-
-###### *check wether there are errors and if there arent errors, proccess the upload*
-
-```php
-if( empty( $upload->uploadErrors() ) ) 
+if(Upload::formIsSubmitted())
 {
-  // create folder if not exist(optional)
-  $upload->createFoldersIfNotExists();
-
-  // start the upload proccess and save the file(s)
-  $upload->save();
-
-  // check for errors again to see if there was some invalid files that couldnt be uploaded
-  // could be because of the php.ini configuration file not allowing or any other reason
-  if( !empty( $upload->uploadErrors() ) )
-  {
-  	// get all the errors of the files that couldnt be uploaded for some reason
-    $errors = $upload->uploadErrors(); 
-
-    foreach( $errors as $error )
-    {
-  	  // output the errors with the invalid files
-      echo $error;
-    }
-  }
-}
-else
-{
-  // get all the errors that stored in array
-  $errors = $upload->uploadErrors(); 
-
-  foreach( $errors as $error )
-  {
-  	// output the errors
-    echo $error;
-  }
+  // rest of the code here
 }
 ```
+
+
+###### instatiate the class
+
+```php
+$upload = new Upload(YOUR-HTML-INPUT-NAME); 
+```
+
+
+###### set the directory where you want to upload the files, by default it will upload to your main directroy
+
+```php
+$upload->setDirectory('img/'); 
+```
+###### you may also specify that you want to create this directory if it's not exists
+
+```php
+$upload->setDirectory('img/')->create(true); 
+```
+
+
+###### set an array of allowed file extensions, by default only 'jpg' and 'png' are allowed
+
+```php
+$upload->setAllowedExtensions(array('jpg', 'png'));
+```
+
+
+###### set the limit for upload size by Kilobyte, on the example under 2MB is allowed
+
+```php
+$upload->setMaxSize(2000); // This will only take effect if your php.ini config file allow this size to be uploaded
+```
+
+
+###### set this only if you want to have a encrypt file names(optional for security)
+
+```php
+$upload->encryptFileNames(true);
+```
+
+###### you may also specify that you want only certain file type to be encrypted like so:
+
+```php
+$upload->encryptFileNames(true)->only(array('jpg')); // only jpg files will be encrypted
+```
+
+
+###### after all is set just run the following command
+
+```php
+$upload->start();
+``` 
+
+
+### Error Handling
+
+###### check wether there are errors and if there arent errors, proccess the upload
+
+```php
+if($upload->hasErrors())
+{
+  foreach($upload->errors() as $errorUpload)
+  {
+    echo $errorUpload->name; // The file name
+    echo $errorUpload->encryptedName; // The encrypted name of the file
+    echo $errorUpload->type; // The native type name of the file(in case needed)
+    echo $errorUpload->extension; // The extension of the file(in lowercase)
+    echo $errorUpload->size; // The size of the file
+    echo $errorUpload->error; // The native error property(in case needed)
+    echo $errorUpload->message; // The error message
+  }
+}
+```
+
+###### here is another method to show you useful errors if something went wrong(normally if you didnt set the KEY)
+
+```php
+print_r($upload->errorsForDeveloper()); // There are some errors only you should look at while setting this up
+```
+
+#### If you liked this script please feel to contact me so we can develop it further :-)
+
+#### Upcomming feautres:
+
+##### - A way to allow you to add you error custom messages(still thinking which syntax will be easy to use).
+##### - Nice method to display the errors easily with bootstrap design by calling $errorUpload->feedbackDisplay();

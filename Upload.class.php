@@ -5,12 +5,14 @@
 |--------------------------------------------------------------------------
 | Upload Class 
 |--------------------------------------------------------------------------
-| This class handle uploading of files
+| This class handle uploading of multiple files
 | 
 |
 */
 class Upload
 {
+	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12'; // Please set your key for encryption here
+
 	protected $_fileInput = array();
 
 	protected $_files = array();
@@ -27,34 +29,31 @@ class Upload
 	
 	protected $_fileSizes = array();
 
-	protected $_directoryPath = '';
+	protected $_directoryPath = '/';
 
-	protected $_errors = array();
+	protected $_debugErrors = array();
 
 	protected $_encryptedFileNames = array();
 
-	protected $_allowedExtensions = array();
+	protected $_allowedExtensions = array('jpg', 'png');
 
 	protected $_maxSize = null;
 	
 	protected $isMultiple = false;
 
 	protected $_fileTypesToEncrypt = array();
-			
-	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12'; // Please set your key for encryption here
 
 	/**
 	 * Setting all the attributes with file data and check if it's single or multiple upload 
 	 */
-	public function __construct()
+	public function __construct($input = null)
 	{
-		if(!isset($_FILES['file']))
+		if(empty($input) && !isset($_FILES[$input]))
 			return;
 		
-		$this->_fileInput = $_FILES['file'];
+		$this->_fileInput = $_FILES[$input];
 		$this->isMultiple = $this->isMultiple($this->_fileInput);
 		
-		$this->setDirectory('/images');
 		$this->_fileNames = $this->_fileInput['name'];
 		$this->_fileTypes = $this->_fileInput['type'];
 		$this->_fileTempNames = $this->_fileInput['tmp_name'];
@@ -63,7 +62,6 @@ class Upload
 		$this->_fileExtensions = $this->getFileExtensions();
 
 		$this->_files = $this->orderFiles($this->_fileInput);
-
 	}
 
 	/**
@@ -83,11 +81,15 @@ class Upload
 			{
 				$sortedFiles[$key] = array(
 											'name' => $files['name'][$key],
+											'encrypted_name' => '',
 											'type' => $files['type'][$key],
+											'extension' => $this->_fileExtensions[$key],
 											'tmp_name' => $files['tmp_name'][$key],
 											'error' => $files['error'][$key],
 											'size' => $files['size'][$key],
 											'encryption' => false,
+											'success' => false,
+											'message' => '',
 										);
 				
 			}
@@ -196,7 +198,8 @@ class Upload
 	{
 		if(!file_exists($this->_directoryPath))
 		{
-			echo "Sorry, but this directory does not exist yet. You should create it first or use createFoldersIfNotExists() before that command.<br>";
+			$this->_debugErrors[] = 'Sorry, but this directory does not exist yet. You can allow directory creating
+									 By setting create() to true. Example: $this->setDirectory(\'images\')->create(true);';
 			return;
 		}
 
@@ -228,7 +231,7 @@ class Upload
 	 *
 	 * @return Object | $this
 	 */
-	public function setAllowedExtentions(Array $extensions = array())
+	public function setAllowedExtensions(Array $extensions = array())
 	{
 		$this->_allowedExtensions = $extensions;
 
@@ -260,27 +263,33 @@ class Upload
 
 		if(!file_exists($this->_directoryPath))
 		{
-			echo 'Sorry, but this path does not exists. you can also set $this->createDirectory(true)' . "<br>";
+			$this->_debugErrors[] = 'Sorry, but this path does not exists. you can also set create() to true.
+									 Example: $this->setDirectory(\'images\')->create(true);';
 			return;
 		}
 			
-		foreach($this->_files as $key => $file) 
+		foreach($this->_files as $key => &$file) 
 		{
 		    if($file['error'] !== UPLOAD_ERR_OK) 
 		    {
-		    	$this->_errors[] = "Invalid File: " . $file['name'] . ".<br>";
+		    	$this->_debugErrors[] = 'The file ' . $file['name'] . ' couldn\'t be uploaded. Please ensure 
+		    							your php.ini file allow this size of files to be uploaded';
+		    	$this->_files[$key]['message'] = 'Invalid File: ' . $file['name'];
 		    	continue;
 		    }
-
+		    
 	    	if($this->validationFails($file))
 	    		continue;
 
-	  
-	    	$fileToUpload = ($this->shouldBeEncrypted($file)) ? $this->_directoryPath . $this->_encryptedFileNames[$key] : 
-	    												 		$this->_directoryPath . $this->_fileNames[$key];
 
-	    	move_uploaded_file($file['tmp_name'], $fileToUpload);
-		}	
+	    	$fileToUpload = ($this->shouldBeEncrypted($file)) ? $this->_directoryPath . $file['encrypted_name'] : 
+	    												 		$this->_directoryPath . $file['name'];
+
+	    	if(!move_uploaded_file($file['tmp_name'], $fileToUpload))
+				$file['success'] = false;
+			else
+				$file['success'] = true;
+		}
 	}
 
 	protected function shouldBeEncrypted($file)
@@ -316,7 +325,9 @@ class Upload
 
 		if(empty(static::KEY))
 		{
-			echo 'Please go to Upload.class.php file and set manually a key inside the const KEY of 32 characters to encrypt your files. keep this key in safe place as well. you can call $this->generateMeAKey() to generate a random 32 characters key';
+			$this->_debugErrors[] = 'Please go to Upload.class.php file and set manually a key inside the const KEY
+								     of 32 characters to encrypt your files. keep this key in safe place as well. 
+								     you can call $this->generateMeAKey() to generate a random 32 characters key';
 			return;
 		}	
 		
@@ -326,8 +337,9 @@ class Upload
 			{
 				$base64EncodedString = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, static::KEY, $fileName, MCRYPT_MODE_ECB));
 				$encryptedName = str_replace('/', '#' , $base64EncodedString);
-				$extention = $this->_fileExtensions[ $key ];
-				$this->_encryptedFileNames[ $key ] = $encryptedName . "." . $extention;
+				
+				$extension = $this->_fileExtensions[$key];
+				$this->_files[$key]['encrypted_name'] = $encryptedName . "." . $extension;
 			}
 		}
 
@@ -365,13 +377,44 @@ class Upload
 	}
 
 	/**
-	 * This method get the errors array.
+	 * This method get the errors array to give some feedback to the user.
 	 *
 	 * @return Array  
 	 */
 	public function errors()
 	{
-		return $this->_errors;
+		$failedUploads = array();
+
+		foreach($this->_files as $key => $file)
+		{
+
+			if($file['success'] == true)
+				continue;
+			
+			$failedFile = new stdClass();
+			
+			$failedFile->name = $file['name'];
+			$failedFile->encryptedName = $file['encrypted_name'];
+			$failedFile->type = $file['type'];
+			$failedFile->extension = $file['extension'];
+			$failedFile->size = $file['size'];
+			$failedFile->error = $file['error'];
+			$failedFile->message = $file['message'];
+
+			$failedUploads[] = $failedFile;
+		}
+						
+		return $failedUploads;
+	}
+
+	/**
+	 * This method get the errors array to give some feedback to the developer.
+	 *
+	 * @return Array  
+	 */
+	public function errorsForDeveloper()
+	{
+		return $this->_debugErrors;
 	}
 
 	/**
@@ -379,21 +422,29 @@ class Upload
 	 *
 	 * @param Integer | $index
 	 *
-	 * @return String | $this->_encryptedFileNames[$index]
+	 * @return String | $this->_files['encrypted_name'][$index]
 	 */
 	public function getEncryptedFileName($index)
 	{
-		return $this->_encryptedFileNames[$index];
+		return $this->_files[$index]['encrypted_name'];
 	}
 
 	/**
 	 * This get the names of the encrypted file names.
 	 *
-	 * @return Array | $this->_encryptedFileNames 
+	 * @return Array | $this->_files['encrypted_name'] 
 	 */
 	public function getEncryptedFileNames()
 	{
-		return $this->_encryptedFileNames;
+		$encryptedFileNames = array();
+		
+		foreach($this->_files as $file)
+		{
+			if($file['encryption'] == true)
+				$encryptedFileNames[] = $file['encrypted_name'];
+		}
+		
+		return $encryptedFileNames;
 	}
 
 	/**
@@ -403,7 +454,7 @@ class Upload
 	 *
 	 * @return Object | $this
 	 */
-	public function createDirectory($create = false)
+	public function create($create = false)
 	{
 		if($create == false)
 			return $this;
@@ -415,29 +466,20 @@ class Upload
 	}
 
 	/**
-	 * Check if extentions allowed
+	 * Check if extensions allowed
 	 *
 	 * @return Boolean
 	 */
-	protected function extentionsAllowed()
+	protected function extensionsAllowed($file)
 	{
 		if(empty($this->_allowedExtensions) && empty($this->_fileExtensions))
 			return;
-
-		foreach( $this->_fileExtensions as $extention )
-		{
-			if(in_array($extention, $this->_allowedExtensions))
-			{
-				return true;
-			}
-			else
-			{
-				$this->_errors[] = "Sorry, but only " . implode( ", " , $this->_allowedExtensions ) . " files are allowed.";
-				return false;
-			}
-		}
+		
+		if(in_array($file['extension'], $this->_allowedExtensions))
+			return true;
 	
-		return true;
+		$file['message'] = "Sorry, but only " . implode( ", " , $this->_allowedExtensions ) . " files are allowed.";
+		return false;
 	}
 
 	/**
@@ -446,7 +488,7 @@ class Upload
 	 *	@return Boolean
 	 *
 	 */
-	protected function maxSizeOk($file)
+	protected function maxSizeOk(&$file)
 	{
 		if(empty($this->_maxSize) && empty($this->_fileSizes))
 			return;
@@ -454,9 +496,9 @@ class Upload
 		if($file['size'] < ($this->_maxSize * 1000))
 			return true;
 		
-		$this->_errors[] = "Sorry, but your file, " . $file['name'] . ", is too big. maximal size allowed " . $this->_maxSize . " Kbyte";
-		return false;
+		$file['message'] = "Sorry, but your file, " . $file['name'] . ", is too big. maximal size allowed " . $this->_maxSize . " Kbyte";
 		
+		return false;	
 	}
 
 	/**
@@ -466,7 +508,7 @@ class Upload
 	 */
 	protected function validationPasses($file)
 	{
-		if($this->extentionsAllowed() && $this->maxSizeOk($file))
+		if($this->extensionsAllowed($file) && $this->maxSizeOk($file))
 			return true;
 	
 		return false;
@@ -477,9 +519,9 @@ class Upload
 	 *
 	 * @return Boolean
 	 */
-	protected function validationFails($file)
+	protected function validationFails(&$file)
 	{
-		if($this->extentionsAllowed() && $this->maxSizeOk($file))
+		if($this->extensionsAllowed($file) && $this->maxSizeOk($file))
 			return false;
 	
 		return true;
@@ -488,9 +530,8 @@ class Upload
 	/**
 	 * A simple gererator of a random key to use for encrypting 
 	 */
-	public function generateMeAKey()
+	public static function generateMeAKey()
 	{
 		echo md5(uniqid());
 	}
-
 }
