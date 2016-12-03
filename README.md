@@ -12,8 +12,7 @@ PHP Class for uploading file or files to the server
 
 
 
-make sure the form is submitted
-
+Make sure the form is submitted:
 ```php
 if(Upload::formIsSubmitted())
 {
@@ -22,66 +21,61 @@ if(Upload::formIsSubmitted())
 ```
 
 
-make an instance of the class
-
+Make an instance of the class
 ```php
 $upload = new Upload(YOUR-HTML-INPUT-NAME); 
 ```
 
 
 
-set the directory where you want to upload the files, by default it will upload to your main directroy
-
+Set the directory where you want to upload the files, by default it will upload to your main directroy
 ```php
 $upload->setDirectory('img/'); 
 ```
-you may also specify that you want to create this directory if it's not exists
 
+You may also specify that you want to create this directory if it's not exists
 ```php
 $upload->setDirectory('img/')->create(true); 
 ```
 
 
 
-you may setting the rules you want for your upload using the following syntax:
-
+You can set the rules you want for your upload using the following syntax:
+```php
 $upload->addRules([
         'size' => 2000,
         'extensions' => 'png|jpg|pdf'
 ]);
+```
 
 
 
-
-set this only if you want to have a encrypt file names(optional for security):
-
+Set this only if you want to have a encrypt file names(optional for security):
 ```php
 $upload->encryptFileNames(true);
 ```
 
-you may also specify that you want only certain file type to be encrypted like so:
-
+You may also specify that you want only certain file type to be encrypted like so:
 ```php
 $upload->encryptFileNames(true)->only(['jpg']); // only jpg files will be encrypted
 ```
-or also the following syntax:
-
+Or also the following syntax:
 ```php
 $upload->encryptFileNames(true)->only('jpg|png|txt'); // only jpg files will be encrypted
 ```
 
 
 
-after all is set just run the following command
-
+After all is set just run the following command
 ```php
 $upload->start();
 ``` 
 
 
+
 ## Error Handling
 
-check wether there are errors and if there arent errors, proccess the upload:
+Check wether there are errors and if there arent errors, proccess the upload:
 
 ```php
 if($upload->unsuccessfulFilesHas())
