@@ -6,13 +6,13 @@ PHP Class for uploading file or files to the server
 ## Setting it up:
 
 ## Few things need to be done first:
-#### 1) Make sure you change the random 32 Character key inside the class file.
-#### 2) You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
-#### 3) Please open the example index.php file I created to follow and get a better understanding
+1) Make sure you change the random 32 Character key inside the class file.
+2) You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
+3) Please open the example index.php file I created to follow and get a better understanding
 
 
 
-## make sure the form is submitted
+make sure the form is submitted
 
 ```php
 if(Upload::formIsSubmitted())
@@ -22,25 +22,28 @@ if(Upload::formIsSubmitted())
 ```
 
 
-## instatiate the class
+make an instance of the class
 
 ```php
 $upload = new Upload(YOUR-HTML-INPUT-NAME); 
 ```
 
 
-## set the directory where you want to upload the files, by default it will upload to your main directroy
+
+set the directory where you want to upload the files, by default it will upload to your main directroy
 
 ```php
 $upload->setDirectory('img/'); 
 ```
-### you may also specify that you want to create this directory if it's not exists
+you may also specify that you want to create this directory if it's not exists
 
 ```php
 $upload->setDirectory('img/')->create(true); 
 ```
 
-## you may set the rules you want for your upload using the following syntax:
+
+
+you may setting the rules you want for your upload using the following syntax:
 
 $upload->addRules([
         'size' => 2000,
@@ -49,25 +52,27 @@ $upload->addRules([
 
 
 
-## set this only if you want to have a encrypt file names(optional for security)
+
+set this only if you want to have a encrypt file names(optional for security):
 
 ```php
 $upload->encryptFileNames(true);
 ```
 
-### you may also specify that you want only certain file type to be encrypted like so:
+you may also specify that you want only certain file type to be encrypted like so:
 
 ```php
 $upload->encryptFileNames(true)->only(['jpg']); // only jpg files will be encrypted
 ```
-### or also the following syntax:
+or also the following syntax:
 
 ```php
 $upload->encryptFileNames(true)->only('jpg|png|txt'); // only jpg files will be encrypted
 ```
 
 
-## after all is set just run the following command
+
+after all is set just run the following command
 
 ```php
 $upload->start();
@@ -76,7 +81,7 @@ $upload->start();
 
 ## Error Handling
 
-### check wether there are errors and if there arent errors, proccess the upload
+check wether there are errors and if there arent errors, proccess the upload:
 
 ```php
 if($upload->unsuccessfulFilesHas())
