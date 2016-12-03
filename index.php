@@ -47,7 +47,7 @@ if(Upload::formIsSubmitted())
 <?php
 if(Upload::formIsSubmitted())
 {
-	if($upload->unsuccessfulFilesHas())
+  if($upload->unsuccessfulFilesHas())
   {
     $upload->displayErrors();
   }
