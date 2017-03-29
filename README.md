@@ -115,5 +115,3 @@ else if($upload->successfulFilesHas())
 ```php
 print_r($upload->debug()); // There are some errors only you should look at while setting this up
 ```
-
-### If you liked this script please feel to contact me so we can develop it further :-)
