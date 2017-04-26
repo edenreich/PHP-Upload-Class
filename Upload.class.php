@@ -55,7 +55,7 @@ class Upload
 			return;
 		
 		$this->_fileInput = $_FILES[$input];
-		$this->_isMultiple = $this->isMultiple($this->_fileInput);
+		$this->_isMultiple = $this->isMultiple($input);
 		
 		$this->_fileNames = $this->_fileInput['name'];
 		$this->_fileTypes = $this->_fileInput['type'];
@@ -173,9 +173,9 @@ class Upload
 	 * 
 	 * @return Boolean
 	 */
-	protected function isMultiple(Array $input)
+	protected function isMultiple($input)
 	{
-		if(count($_FILES['file']['name']) > 1)
+		if(count($_FILES[$input]['name']) > 1)
 			return true;
 		
 		return false;
