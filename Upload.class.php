@@ -45,7 +45,6 @@ class Upload
 
 	protected $_customErrorMessages = array();
 
-
 	/**
 	 * Setting all the attributes with file data and check if it's single or multiple upload.
 	 */
@@ -67,7 +66,6 @@ class Upload
 		$this->_files = $this->orderFiles($this->_fileInput);
 	}
 
-
 	/**
 	 * This method organized the files in a an array of keys for each file.
 	 *
@@ -83,18 +81,16 @@ class Upload
 		{
 			foreach($values as $key => $value) 
 			{
-				$sortedFiles[$key] = array(
-											'name' => $files['name'][$key],
-											'encrypted_name' => '',
-											'type' => $files['type'][$key],
-											'extension' => $this->_fileExtensions[$key],
-											'tmp_name' => $files['tmp_name'][$key],
-											'error' => $files['error'][$key],
-											'size' => $files['size'][$key],
-											'encryption' => false,
-											'success' => false,
-											'errorMessage' => '',
-										);
+				$sortedFiles[$key] = ['name' => $files['name'][$key],
+						      'encrypted_name' => '',
+						      'type' => $files['type'][$key],
+						      'extension' => $this->_fileExtensions[$key],
+						      'tmp_name' => $files['tmp_name'][$key],
+						      'error' => $files['error'][$key],
+						      'size' => $files['size'][$key],
+						      'encryption' => false,
+						      'success' => false,
+						      'errorMessage' => ''];
 				
 			}
 					
@@ -102,7 +98,6 @@ class Upload
 
 		return $sortedFiles;
 	}
-
 
 	/**
 	 * This method allow the developer to set some rules for the upload process.
@@ -138,7 +133,6 @@ class Upload
 		return $this;
 	}
 
-
 	/**
 	 * This method allows the developer to set custom error messages.
 	 *
@@ -165,11 +159,10 @@ class Upload
 		}
 	}
 
-
 	/**
 	 * This method checks if its files or file.
 	 *
-	 * @param Array | $input
+	 * @param String | $input
 	 * 
 	 * @return Boolean
 	 */
@@ -180,7 +173,6 @@ class Upload
 		
 		return false;
 	}
-
 
 	/**
 	 * Get the extentions of the files.
@@ -201,7 +193,6 @@ class Upload
 		return $extensions;
 	}
 
-
 	/**
 	 * Set the path directory where you want to upload the files(if not specfied file/files 
 	 * will be uploaded to the current directory).
@@ -219,7 +210,6 @@ class Upload
 
 		return $this;
 	}
-
 
 	/**
 	 * start the upload process
@@ -246,7 +236,7 @@ class Upload
 
 
 	    	$fileToUpload = ($this->shouldBeEncrypted($file)) ? $this->_directoryPath . $file['encrypted_name'] : 
-	    												 		$this->_directoryPath . $file['name'];
+	    							    $this->_directoryPath . $file['name'];
 
 	    	if(!move_uploaded_file($file['tmp_name'], $fileToUpload))
 				$file['success'] = false;
@@ -254,7 +244,6 @@ class Upload
 				$file['success'] = true;
 		}
 	}
-
 
 	/**
 	 * This method checks if the file should be encrypted
@@ -267,7 +256,6 @@ class Upload
 	{
 		return $file['encryption'];
 	}
-
 
 	/**
 	 * This method decrypt the file name based on the key you specfied.
@@ -282,11 +270,10 @@ class Upload
 		return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, static::KEY, base64_decode($encryptedCode), MCRYPT_MODE_ECB));
 	}
 
-
 	/**
 	 * Save the file/files with the random name on the server(optional for security uses).
 	 *
-	 * @param Boolean | $generate
+	 * @param Boolean | $encrypt
 	 *
 	 * @return Object | $this
 	 */
@@ -318,7 +305,6 @@ class Upload
 		return $this;
 	}
 
-
 	/**
 	 * Allow the user to specify which file types to encrypt
 	 *
@@ -347,7 +333,6 @@ class Upload
 		return;
 	}
 
-
 	/**
 	 * This method create the directory if needed
 	 * 
@@ -363,7 +348,6 @@ class Upload
 		if(!file_exists($this->_directoryPath))
 			mkdir($this->_directoryPath);	
 	}
-
 
 	/**
 	 * Check if extensions allowed
@@ -385,7 +369,6 @@ class Upload
 		return false;
 	}
 
-
 	/**
 	 * Check if the file size allowed
 	 *
@@ -405,7 +388,6 @@ class Upload
 		
 		return false;	
 	}
-
 
 	/**
 	 * Check if file validation fails
@@ -428,7 +410,6 @@ class Upload
 		return true;
 	}
 
-
 	/**
 	 * This method checks if the upload was unsuccessful.
 	 * 
@@ -444,7 +425,6 @@ class Upload
 		
 		return false;
 	}
-
 
 	/**
 	 * This method checks if the upload was successful.
@@ -497,7 +477,6 @@ class Upload
 		return $failedUploads;
 	}
 
-
 	/**
 	 * This method get the errors array to give some feedback to the user.
 	 *
@@ -529,7 +508,6 @@ class Upload
 		return $successfulUploads;
 	}
 
-
 	/**
 	 * This method displays the errors formated nicely with bootstraps.
 	 * 
@@ -543,7 +521,6 @@ class Upload
 	      echo '<div class="alert alert-danger">couldn\'t upload ' . $file->name .'. '. $file->errorMessage . '</div>';
 	    }
 	}
-
 
 	/**
 	 * This method displays the errors formated nicely with bootstraps.
@@ -575,7 +552,6 @@ class Upload
 		return true;
 	}
 
-
 	/**
 	 * A simple gererator of a random key to use for encrypting 
 	 */
@@ -583,7 +559,6 @@ class Upload
 	{
 		echo md5(uniqid());
 	}
-
 
 	/**
 	 * This method get the errors array to give some feedback to the developer.
