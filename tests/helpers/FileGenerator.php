@@ -65,10 +65,10 @@ class FileGenerator
         ];
 	}
 
-	public function multiple() 
+	public function multiple($inputName) 
 	{
 		return [
-            'file' => [
+            $inputName => [
                 'name' => [$this->name(), $this->name()],
                 'type' => [$this->mimeType(), $this->mimeType()],
                 'size' => [$this->size(), $this->size()],

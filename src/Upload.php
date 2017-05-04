@@ -16,37 +16,37 @@ class Upload
 {
 	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12'; // Please set your key for encryption here
 
-	protected $_fileInput = array();
+	protected $_fileInput = [];
 
-	protected $_files = array();
+	protected $_files = [];
 	
-	protected $_fileNames = array();
+	protected $_fileNames = [];
 
-	protected $_fileTypes = array();
+	protected $_fileTypes = [];
 	
-	protected $_fileTempNames = array();
+	protected $_fileTempNames = [];
 			
-	protected $_fileExtensions = array();
+	protected $_fileExtensions = [];
 			
-	protected $_fileErrors = array();
+	protected $_fileErrors = [];
 	
-	protected $_fileSizes = array();
+	protected $_fileSizes = [];
 
 	protected $_directoryPath = '/';
 
-	protected $_debug = array();
+	protected $_debug = [];
 
-	protected $_encryptedFileNames = array();
+	protected $_encryptedFileNames = [];
 
-	protected $_allowedExtensions = array('jpg', 'png');
+	protected $_allowedExtensions = ['jpg', 'png'];
 
 	protected $_maxSize = null;
 	
 	protected $_isMultiple = false;
 
-	protected $_fileTypesToEncrypt = array();
+	protected $_fileTypesToEncrypt = [];
 
-	protected $_customErrorMessages = array();
+	protected $_customErrorMessages = [];
 
 	/**
 	 * Setting all the attributes with file data and check if it's single or multiple upload.
@@ -81,10 +81,8 @@ class Upload
 	{
 		$sortedFiles = []; 
 	
-		foreach($files as $property => $values)
-		{
-			foreach($values as $key => $value) 
-			{
+		foreach($files as $property => $values) {
+			foreach($values as $key => $value) {
 				$sortedFiles[$key] = ['name' => $files['name'][$key],
 						      'encrypted_name' => '',
 						      'type' => $files['type'][$key],
@@ -97,7 +95,6 @@ class Upload
 						      'errorMessage' => ''];
 				
 			}
-					
 		}
 
 		return $sortedFiles;
@@ -112,16 +109,13 @@ class Upload
 	 */
 	public function addRules(Array $rules)
 	{
-		foreach($rules as $rule => $value)
-		{
-			switch($rule)
-			{
+		foreach($rules as $rule => $value) {
+			switch($rule) {
 				case 'size':
 					$this->_maxSize = @intval($value);
 					break;
 				case 'extensions':
-					if($extensions = explode('|', $value))
-					{
+					if($extensions = explode('|', $value)) {
 						$this->_allowedExtensions = $extensions;
 						break;
 					}
@@ -458,7 +452,7 @@ class Upload
 	 */
 	public function errorFiles()
 	{
-		$failedUploads = array();
+		$failedUploads = [];
 
 		foreach($this->_files as $key => $file) {
 			if($file['success'] == true) {
