@@ -62,7 +62,7 @@ $upload->encryptFileNames(true)->only(['jpg']); // only jpg files will be encryp
 ```
 Or also the following syntax:
 ```php
-$upload->encryptFileNames(true)->only('jpg|png|txt'); // only jpg files will be encrypted
+$upload->encryptFileNames(true)->only('jpg|png|txt'); // only jpg, png and txt files will be encrypted
 ```
 
 
