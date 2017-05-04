@@ -1,3 +1,5 @@
+<p text-align="center"><img src="https://s18.postimg.org/3qigwc9xl/elephant.jpg"></p>
+
 # Upload.php
 PHP Class for uploading file or files to the server
 
