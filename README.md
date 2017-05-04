@@ -4,8 +4,9 @@ PHP Class for uploading file or files to the server
 # How to use this class
 
 ## Few things need to be done first:
-#### 1) Make sure you change the random 32 Character key inside the class file.
-#### 2) You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
+#### 1) Copy the class that located in the src directory into your project.
+#### 2) Make sure you change the random 32 Character key inside the class file.
+        You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
 #### 3) Please open the example index.php file I created to follow and get a better understanding
 
 
