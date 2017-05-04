@@ -115,6 +115,11 @@ class Upload
 					$this->_maxSize = @intval($value);
 					break;
 				case 'extensions':
+					if(is_array($value)) {
+						$this->_allowedExtensions = $value;
+						break;
+					}
+
 					if($extensions = explode('|', $value)) {
 						$this->_allowedExtensions = $extensions;
 						break;
@@ -346,6 +351,26 @@ class Upload
 		if(!file_exists($this->_directoryPath)) {
 			mkdir($this->_directoryPath);	
 		}
+	}
+
+	/**
+	 * This method retrieve the allowed extensions.
+	 *
+	 * @return Array
+	 */
+	public function getAllowedExtensions() 
+	{
+		return ($this->_allowedExtensions) ?: '';
+	}
+
+	/**
+	 * This method retrieve the maximum uploading size.
+	 *
+	 * @return Int
+	 */
+	public function getMaxUploadingSize()
+	{
+		return $this->_maxSize;
 	}
 
 	/**

@@ -48,6 +48,13 @@ $upload->addRules([
         'extensions' => 'png|jpg|pdf'
 ]);
 ```
+or
+```php
+$upload->addRules([
+        'size' => 2000,
+        'extensions' => ['png', 'jpg', 'pdf']
+]);
+```
 
 
 

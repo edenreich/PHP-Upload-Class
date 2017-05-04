@@ -15,6 +15,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 	public function tearDown()
 	{
 		unset($this->fileGenerator);
+		unset($_FILES);
 	}
 
 	public function testOrderFiles()
@@ -48,6 +49,31 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 	public function testAddRules() 
 	{
+
+		$_FILES = $this->fileGenerator->single('file');
+
+		$upload = new Upload('file');
+
+		$upload->addRules([
+		        'size' => 2000,
+		        'extensions' => 'png|jpg|pdf'
+		]);
+
+		$extensions = $upload->getAllowedExtensions();
+		$maxSize = $upload->getMaxUploadingSize();
 		
+		$this->assertEquals($extensions, ['png', 'jpg', 'pdf']);
+		$this->assertEquals($maxSize, 2000);
+
+		$upload->addRules([
+		        'size' => 2500,
+		        'extensions' => ['png', 'jpg', 'pdf']
+		]);
+
+		$extensions = $upload->getAllowedExtensions();
+		$maxSize = $upload->getMaxUploadingSize();
+
+		$this->assertEquals($extensions, ['png', 'jpg', 'pdf']);
+		$this->assertEquals($maxSize, 2500);
 	}
 }
