@@ -1,4 +1,4 @@
-# Upload.class.php
+# Upload.php
 PHP Class for uploading file or files to the server
 
 # How to use this class
