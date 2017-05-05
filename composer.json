@@ -18,8 +18,10 @@
             "homepage": "https://github.com/edenreich/"
         }
     ],
+    "require" : {
+    	"php": ">=5.4.0"
+    },
 	"require-dev": {
-		"php": ">=5.4.0",
 		"phpunit/phpunit": "~5.7",
 		"guzzlehttp/guzzle": "^6.2"
 	},
