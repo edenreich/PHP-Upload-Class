@@ -53,7 +53,12 @@ class Upload
 	 */
 	public function __construct($input = null)
 	{
-		if(empty($input) && !isset($_FILES[$input])) {
+		if(empty($input) || ! isset($_FILES[$input])) {
+			$this->_debug[] = 'Invalid Argument';
+			return;
+		}
+		
+		if(empty($_FILES[$input]['name'][0])) {
 			return;
 		}
 
