@@ -1,6 +1,7 @@
 <p align="center"><img src="https://s11.postimg.org/6rrm3zatv/elephantsmall.jpg"></p>
 
 # Upload.php
+<p><img src="https://travis-ci.org/edenreich/PHP-Upload-Class.svg?branch=master"></p>
 PHP Class for uploading file or files to the server
 
 # How to use this class
