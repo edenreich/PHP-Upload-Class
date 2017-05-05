@@ -4,16 +4,18 @@
 <p><img src="https://travis-ci.org/edenreich/PHP-Upload-Class.svg?branch=master"></p>
 PHP Class for uploading file or files to the server
 
-# Installing with composer:
-just run:
+# Installing
+with composer just run:
 ```shell 
-composer install reich/upload
+composer require reich/upload
 ```
+or
+just copy it manually into your project: Upload.php is the file you will need.
 
 # How to use this class
 
 ## Few things need to be done first:
-#### 1) Copy the class that located in the src directory into your project.
+#### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
 #### 2) Make sure you change the random 32 Character key inside the class file in Source\Upload namespace.
 Note: You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
 #### 3) Please open the example index.php file I created to follow and get a better understanding
