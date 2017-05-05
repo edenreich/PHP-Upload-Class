@@ -7,9 +7,7 @@ class FileGenerator
 	public function path()
 	{
 		$index = mt_rand(0, 2);
-		$paths = ['tests/images/example-1.jpg', 
-				  'tests/images/example-2.jpg', 
-				  'tests/images/example-3.png'];
+		$paths = ['tests/images/example-1.jpg', 'tests/images/example-2.jpg', 'tests/images/example-3.png'];
 	
 		return $paths[$index];
 	}
@@ -17,9 +15,7 @@ class FileGenerator
 	public function name() 
 	{
 		$index = mt_rand(0, 2);
-		$names = ['example-1.jpg', 
-				  'example-2.jpg', 
-				  'example-3.jpg'];
+		$names = ['example-1.jpg', 'example-2.jpg', 'example-3.jpg'];
 	
 		return $names[$index];
 	}
