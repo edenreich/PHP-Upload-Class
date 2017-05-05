@@ -1,7 +1,26 @@
 {
+	"name":              "reich/upload",
+    "description":       "A great class to upload your file or files to the server",
+    "type":              "library",
+    "license":           "MIT",
+    "homepage":          "https://github.com/doctrine/instantiator",
+    "keywords":          [
+        "upload",
+        "files",
+        "file",
+        "form",
+        "bootstrap"
+    ],
+    "authors": [
+        {
+            "name":     "Eden Reich",
+            "email":    "eden.reich@gmail.com",
+            "homepage": "https://github.com/edenreich/"
+        }
+    ],
 	"require-dev": {
+		"php": ">=5.3.0",
 		"phpunit/phpunit": "~5.7",
-		"fzaninotto/faker": "^1.6",
 		"guzzlehttp/guzzle": "^6.2"
 	},
 	"autoload": {
