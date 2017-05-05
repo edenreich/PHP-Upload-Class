@@ -3,7 +3,7 @@
     "description":       "A great class to upload your file or files to the server",
     "type":              "library",
     "license":           "MIT",
-    "homepage":          "https://github.com/doctrine/instantiator",
+    "homepage":          "https://github.com/edenreich",
     "keywords":          [
         "upload",
         "files",
