@@ -1,5 +1,5 @@
 {
-	"name":              "reich/upload",
+    "name":              "reich/upload",
     "description":       "A great class to upload your file or files to the server",
     "type":              "library",
     "license":           "MIT",
