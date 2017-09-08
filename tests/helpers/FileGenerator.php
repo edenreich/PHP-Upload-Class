@@ -7,6 +7,7 @@ class FileGenerator
 	public function path()
 	{
 		$index = mt_rand(0, 2);
+		
 		$paths = ['tests/images/example-1.jpg', 'tests/images/example-2.jpg', 'tests/images/example-3.png'];
 	
 		return $paths[$index];
@@ -15,6 +16,7 @@ class FileGenerator
 	public function name() 
 	{
 		$index = mt_rand(0, 2);
+		
 		$names = ['example-1.jpg', 'example-2.jpg', 'example-3.jpg'];
 	
 		return $names[$index];
@@ -23,6 +25,7 @@ class FileGenerator
 	public function mimeType() 
 	{
 		$index = mt_rand(0, 3);
+		
 		$mimeType = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];
 
 		return $mimeType[$index];
@@ -36,6 +39,7 @@ class FileGenerator
 	public function tempName() 
 	{
 		$index = mt_rand(0, 5);
+		
 		$tmp_names = [
 			__DIR__ . '/tmp/php/php1h4j1o',
 			__DIR__ . '/tmp/php/php121393',
@@ -51,26 +55,26 @@ class FileGenerator
 	public function single($inputName) 
 	{
 		return [
-            $inputName => [
-                'name' => [$this->name()],
-                'type' => [$this->mimeType()],
-                'size' => [$this->size()],
-                'tmp_name' => [$this->tempName()],
-                'error' => [0]
-            ]
-        ];
+            		$inputName => [
+                		'name' => [$this->name()],
+                		'type' => [$this->mimeType()],
+                		'size' => [$this->size()],
+                		'tmp_name' => [$this->tempName()],
+                		'error' => [0]
+            		]
+        	];
 	}
 
 	public function multiple($inputName) 
 	{
 		return [
-            $inputName => [
-                'name' => [$this->name(), $this->name()],
-                'type' => [$this->mimeType(), $this->mimeType()],
-                'size' => [$this->size(), $this->size()],
-                'tmp_name' => [$this->tempName(), $this->tempName()],
-                'error' => [0,0]
-            ]
-        ];
+            		$inputName => [
+                		'name' => [$this->name(), $this->name()],
+                		'type' => [$this->mimeType(), $this->mimeType()],
+                		'size' => [$this->size(), $this->size()],
+                		'tmp_name' => [$this->tempName(), $this->tempName()],
+                		'error' => [0,0]
+            		]
+        	];
 	}
 }
