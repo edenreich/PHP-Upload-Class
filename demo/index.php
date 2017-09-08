@@ -18,7 +18,7 @@ if(Upload::formIsSubmitted())
             'extensions' => 'Please upload only jpg, png or pdf'
           ]);
 
-  $upload->encryptFileNames(false)->only('jpg');
+  $upload->encryptFileNames(true)->only('jpg');
 
   $upload->start();
 
