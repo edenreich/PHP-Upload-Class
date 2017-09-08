@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Source\Upload;
 
@@ -17,7 +18,7 @@ if(Upload::formIsSubmitted())
             'extensions' => 'Please upload only jpg, png or pdf'
           ]);
 
-  $upload->encryptFileNames(true)->only('jpg');
+  $upload->encryptFileNames(false)->only('jpg');
 
   $upload->start();
 
