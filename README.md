@@ -1,7 +1,29 @@
 <p align="center"><img src="https://s11.postimg.org/6rrm3zatv/elephantsmall.jpg"></p>
 
 # Upload.php
-<p><img src="https://travis-ci.org/edenreich/PHP-Upload-Class.svg?branch=master"></p>
+<p>
+  <a href="#">
+    <img src="https://travis-ci.org/edenreich/PHP-Upload-Class.svg?branch=master">
+  </a>
+  <a href="https://packagist.org/packages/reich/upload">
+    <img src="https://poser.pugx.org/reich/upload/downloads">
+  </a>
+  <a href="https://packagist.org/packages/reich/upload">
+    <img src="https://poser.pugx.org/reich/upload/v/stable">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/github/forks/edenreich/PHP-Upload-Class.svg">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/github/stars/edenreich/PHP-Upload-Class.svg">
+  </a>
+  <a>
+     <img src="https://img.shields.io/github/issues/edenreich/PHP-Upload-Class.svg">
+  </a>
+  <a href="https://packagist.org/packages/reich/upload">
+    <img src="https://poser.pugx.org/reich/upload/license">
+  </a>
+</p>
 PHP Class for uploading file or files to the server
 
 # Installing
