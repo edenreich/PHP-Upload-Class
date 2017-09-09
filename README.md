@@ -44,7 +44,7 @@ Note: You can also use Upload::generateMeAKey() command, then just copy it and p
 
 Make sure the form is submitted:
 ```php
-if(Upload::formIsSubmitted())
+if(Upload::submitted())
 {
   // rest of the code goes here
 }
