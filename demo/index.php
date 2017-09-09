@@ -12,13 +12,13 @@ if(Upload::submitted())
 
   $upload->addRules([
             'size' => 1500,
-            'extensions' => 'jpg|png|pdf',
+            'extensions' => 'jpg|png',
           ])->customErrorMessages([
             'size' => 'Please upload files that are less than 2MB size',
             'extensions' => 'Please upload only jpg, png or pdf'
           ]);
 
-  $upload->encryptFileNames(true)->only('jpg');
+  $upload->encryptFileNames(true)->only('png|png');
 
   $upload->start();
 

@@ -98,12 +98,46 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 	/** 
 	 * @test 
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \Source\Exceptions\FolderNotExistException
 	 */
-	public function when_invalid_file_is_passed_an_exception_is_throwen()
+	public function if_a_folder_is_not_present_an_exception_is_throwen()
 	{
-		$_FILES = $this->fileGenerator->invalidFile('file');
+		$_FILES = $this->fileGenerator->single('file');
 
 		$upload = new Upload('file');
+
+		$upload->setDirectory('/invalid/directory/path');
+
+		$upload->start();
+	}
+
+	/** 
+	 * @test 
+	 * @expectedException \Source\Exceptions\PermissionDeniedException
+	 */
+	public function if_a_server_not_allowing_the_creation_of_a_folder_an_exception_is_throwen()
+	{
+		$_FILES = $this->fileGenerator->single('file');
+
+		$upload = new Upload('file');
+
+		$upload->setDirectory('/invalid/directory/path')->create(true);
+
+		$upload->start();
+	}
+
+	/** @test */
+	public function can_encrypt_a_file_name_and_decrypt_it_later()
+	{
+		$_FILES = $this->fileGenerator->single('file');
+
+		$upload = new Upload('file');
+
+		$fileName = $_FILES['file']['name'][0];
+
+		$encrypted = $upload->encrypt($fileName);
+		$decrypted = $upload->decrypt($encrypted);
+
+		$this->assertEquals($fileName, $decrypted);
 	}
 }
