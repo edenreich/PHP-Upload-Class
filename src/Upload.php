@@ -397,13 +397,14 @@ class Upload
 	/**
 	 * Encrypt the file name.
 	 *
+	 * @param string | $fileName
 	 * @return string
 	 */
-	public function encrypt($string) 
+	public function encrypt($fileName) 
 	{
 	    $encryptMethod = "AES-256-CBC";
 
-	    $output = @base64_encode(openssl_encrypt($string, $encryptMethod, static::KEY));
+	    $output = @base64_encode(openssl_encrypt($fileName, $encryptMethod, static::KEY));
 
 	    return $output;
 	}
@@ -411,13 +412,14 @@ class Upload
 	/**
 	 * Decrypt the file name.
 	 *
+	 * @param string | $fileName
 	 * @return string
 	 */
-	public function decrypt($string)
+	public function decrypt($fileName)
 	{
 		$encryptMethod = "AES-256-CBC";
 
-		return openssl_decrypt(@base64_decode($string), $encryptMethod, static::KEY);
+		return openssl_decrypt(@base64_decode($fileName), $encryptMethod, static::KEY);
 	}
 
 	/**
