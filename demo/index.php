@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Source\Upload;
 
-if(Upload::formIsSubmitted())
+if(Upload::submitted())
 {
   $upload = new Upload('file'); // give the constructor the name of the html input field
 
@@ -48,7 +48,7 @@ if(Upload::formIsSubmitted())
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <?php
-if(Upload::formIsSubmitted())
+if(Upload::submitted())
 {
   if($upload->unsuccessfulFilesHas())
   {
