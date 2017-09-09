@@ -18,13 +18,14 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 		unset($_FILES);
 	}
 
-	public function testOrderFiles()
+	/** @test */
+	public function order_files_properly()
 	{
 		$_FILES = $this->fileGenerator->single('file');
 
 		$upload = new Upload('file');
 
-		$results = $upload->orderFiles($_FILES['file']);
+		$results = $upload->sortFiles($_FILES['file']);
 
 		$this->assertCount(1, $results);
 		$this->assertCount(10, $results[0]);
@@ -36,7 +37,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 		$upload = new Upload('files');
 
-		$results = $upload->orderFiles($_FILES['files']);
+		$results = $upload->sortFiles($_FILES['files']);
 
 		$this->assertCount(2, $results);
 		$this->assertCount(10, $results[0]);
@@ -47,7 +48,8 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 	}
 
-	public function testAddRules() 
+	/** @test */
+	public function can_add_rules() 
 	{
 
 		$_FILES = $this->fileGenerator->single('file');
@@ -75,5 +77,33 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($extensions, ['png', 'jpg', 'pdf']);
 		$this->assertEquals($maxSize, 2500);
+	}
+
+	/** 
+	 * @test 
+	 * @expectedException \Source\Exceptions\InvalidRuleException
+	 */
+	public function an_exception_is_throwen_when_a_rule_that_does_not_exist_is_applied()
+	{
+		$_FILES = $this->fileGenerator->single('file');
+
+		$upload = new Upload('file');
+
+		$upload->addRules([
+		        'size' => 2000,
+		        'extensions' => 'png|jpg|pdf',
+		        'notexist' => 'somevalue',
+		]);
+	}
+
+	/** 
+	 * @test 
+	 * @expectedException InvalidArgumentException
+	 */
+	public function when_invalid_file_is_passed_an_exception_is_throwen()
+	{
+		$_FILES = $this->fileGenerator->invalidFile('file');
+
+		$upload = new Upload('file');
 	}
 }

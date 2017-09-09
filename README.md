@@ -149,7 +149,7 @@ else if($upload->successfulFilesHas())
 }
 ```
 
-#### here is another method to show you useful errors if something went wrong(normally if you didnt set the KEY)
+#### Here is another method to show you useful errors if something went wrong:
 
 ```php
 print_r($upload->debug()); // There are some errors only you should look at while setting this up
