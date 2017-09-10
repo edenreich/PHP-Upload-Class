@@ -9,6 +9,7 @@ use stdClass;
  *
  * @author Eden Reich <eden.reich@gmail.com>
  * @license MIT
+ * @version 1.0
  */
 
 class Upload
