@@ -109,6 +109,19 @@ $upload->start();
 ``` 
 
 
+## Events
+Whenever a file has been successfully uploaded.
+```php
+$upload->success(function($file) {
+  // handle the file
+});
+```
+If something went wrong listen to error.
+```php
+$upload->error(function($file) {
+  // handle the file
+});
+```
 
 ## Error Handling
 

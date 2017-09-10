@@ -4,9 +4,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Source\Upload;
 
-if(Upload::submitted())
-{
-  $upload = new Upload('file'); // give the constructor the name of the html input field
+if(Upload::submitted()) {
+  // give the constructor the name of the html input field
+  $upload = new Upload('file');
 
   $upload->setDirectory('images')->create(true);
 
@@ -22,24 +22,34 @@ if(Upload::submitted())
 
   $upload->start();
 
-  
-  // if($upload->unsuccessfulFilesHas())
-  // {
-  //   foreach($upload->errorFiles() as $file)
-  //   {
-  //      // now you have the $file object to format the message how you prefer
-  //   }
-  // } 
- 
-  // if($upload->successfulFilesHas())
-  // {
-  //    foreach($upload->successFiles() as $file)
-  //    {
-  //       // now you have the $file object to format the message how you prefer
-  //    }
-  // }
+  $upload->success(function($file) {
+    // handle successful uploads.
+  }, false);
+
+  $upload->error(function($file) {
+    // handle faliure uploads.
+  }, false);
+
+  /*
+
+  Or
+
+  if ($upload->unsuccessfulFilesHas()) {
+    foreach ($upload->errorFiles() as $file) {
+       // now you have the $file object to format the message how you prefer
+    }
+  }
+
+  if ($upload->successfulFilesHas()) {
+     foreach ($upload->successFiles() as $file) {
+        // now you have the $file object to format the message how you prefer
+     }
+  }
+
+  */
 
 }
+
 ?><!DOCTYPE html>
 <html>
 <head>
@@ -48,19 +58,18 @@ if(Upload::submitted())
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <?php
-if(Upload::submitted())
-{
-  if($upload->unsuccessfulFilesHas())
-  {
+
+if (Upload::submitted()) {
+  if ($upload->unsuccessfulFilesHas()) {
     $upload->displayErrors();
   }
-  else if($upload->successfulFilesHas())
-  {
+  elseif ($upload->successfulFilesHas()) {
     $upload->displaySuccess();
   }
 }
+
 ?>
-<body> 
+<body>
   <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
 		<input type="file" name="file[]" multiple>
 		<input type="submit" value="Upload">
