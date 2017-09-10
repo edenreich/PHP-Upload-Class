@@ -7,7 +7,7 @@ use Tests\Helpers\FileGenerator;
 
 class UploadClassTest extends \PHPUnit_Framework_TestCase
 {
-	public function setUp() 
+	public function setUp()
 	{
 		$this->fileGenerator = new FileGenerator;
 	}
@@ -49,7 +49,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/** @test */
-	public function can_add_rules() 
+	public function can_add_rules()
 	{
 
 		$_FILES = $this->fileGenerator->single('file');
@@ -63,7 +63,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 		$extensions = $upload->getAllowedExtensions();
 		$maxSize = $upload->getMaxUploadingSize();
-		
+
 		$this->assertEquals($extensions, ['png', 'jpg', 'pdf']);
 		$this->assertEquals($maxSize, 2000);
 
@@ -79,8 +79,24 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($maxSize, 2500);
 	}
 
-	/** 
-	 * @test 
+	/** @test */
+	public function a_directory_is_being_created()
+	{
+		$_FILES = $this->fileGenerator->single('file');
+
+		$upload = new Upload('file');
+
+		$dirPath = __DIR__. '/tmp';
+
+		$upload->setDirectory($dirPath)->create(true);
+
+		$this->assertTrue(file_exists($dirPath));
+
+		rmdir($dirPath);
+	}
+
+	/**
+	 * @test
 	 * @expectedException \Source\Exceptions\InvalidRuleException
 	 */
 	public function an_exception_is_throwen_when_a_rule_that_does_not_exist_is_applied()
@@ -96,8 +112,8 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 		]);
 	}
 
-	/** 
-	 * @test 
+	/**
+	 * @test
 	 * @expectedException \Source\Exceptions\FolderNotExistException
 	 */
 	public function if_a_folder_is_not_present_an_exception_is_throwen()
@@ -111,8 +127,8 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 		$upload->start();
 	}
 
-	/** 
-	 * @test 
+	/**
+	 * @test
 	 * @expectedException \Source\Exceptions\PermissionDeniedException
 	 */
 	public function if_a_server_not_allowing_the_creation_of_a_folder_an_exception_is_throwen()
@@ -139,5 +155,22 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 		$decrypted = $upload->decrypt($encrypted);
 
 		$this->assertEquals($fileName, $decrypted);
+	}
+
+	/** @test */
+	public function error_method_is_being_called_every_time_an_file_has_a_failure()
+	{
+		static $callsCount = 0;
+		$_FILES = $this->fileGenerator->multiple('files');
+
+		$upload = new Upload('files');
+
+		$upload->start();
+
+		$upload->error(function($file) use (&$callsCount) {
+			$callsCount++;
+		});
+
+		$this->assertEquals(2, $callsCount);
 	}
 }

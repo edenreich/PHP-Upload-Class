@@ -107,7 +107,7 @@ class FileGenerator
 	 */
 	protected function size()
 	{
-		return mt_rand(10, 5000);
+		return mt_rand(10, 1000);
 	}
 
 	/**
@@ -118,16 +118,18 @@ class FileGenerator
 	protected function tempName() 
 	{
 		$index = mt_rand(0, 5);
-		
-		$tmp_names = [
-			__DIR__ . '/tmp/php/php1h4j1o',
-			__DIR__ . '/tmp/php/php121393',
-			__DIR__ . '/tmp/php/php1dggw3',
-			__DIR__ . '/tmp/php/phpokegewf',
-			__DIR__ . '/tmp/php/php1qwdpg1',
-			__DIR__ . '/tmp/php/phphsaddf6',
+
+		$tmpDir = sys_get_temp_dir();
+		tempnam(sys_get_temp_dir(), 'Tux');
+		$tmpNames = [
+			$tmpDir . '/php/php1h4j1o',
+			$tmpDir . '/php/php121393',
+			$tmpDir . '/php/php1dggw3',
+			$tmpDir . '/php/phpokegewf',
+			$tmpDir . '/php/php1qwdpg1',
+			$tmpDir . '/php/phphsaddf6',
 		];
 
-		return $tmp_names[$index];
+		return $tmpNames[$index];
 	}
 }

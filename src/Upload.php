@@ -2,7 +2,9 @@
 
 namespace Source;
 
+use Closure;
 use stdClass;
+use ReflectionFunction;
 use InvalidArgumentException;
 use Source\Exceptions\InvalidRuleException;
 use Source\Exceptions\FolderNotExistException;
@@ -119,6 +121,20 @@ class Upload
 	 * @var array
 	 */
 	protected $customErrorMessages = [];
+
+	/**
+	 * Stores the successful uploads.
+	 *
+	 * @var array
+	 */
+	protected $successfulUploads = [];
+
+	/**
+	 * Stores the faliure uploads.
+	 *
+	 * @var array
+	 */
+	protected $failureUploads = [];
 
 	/**
 	 * Debug informations
@@ -276,7 +292,7 @@ class Upload
 	}
 
 	/**
-	 * Set the path directory where you want to upload the files(if not specfied file/files 
+	 * Set the path directory where you want to upload the files(if not specfied file/files
 	 * will be uploaded to the current directory).
 	 *
 	 * @param string | $path
@@ -304,7 +320,6 @@ class Upload
 			return;
 		}
 
-
 		if (! file_exists($this->directoryPath)) {
 			throw new FolderNotExistException;
 		}
@@ -320,9 +335,53 @@ class Upload
 
 			if (! move_uploaded_file($file['tmp_name'], $fileToUpload)) {
 				$file['success'] = false;
+				$this->failureUploads[] = $file;
 	    	} else {
-				$file['success'] = true;
+	    		$file['success'] = true;
+	    		$this->successfulUploads[] = $file;
 	    	}
+		}
+	}
+
+	/**
+	 * Listener for success.
+	 *
+	 * @param Closure | $callback
+	 * @param boolean | $asObject
+	 * @return void
+	 */
+	public function success(Closure $callback, $asObject = true)
+	{
+		$reflector = new ReflectionFunction($callback);
+
+		if (isset($reflector->getParameters()[0]) && $reflector->getParameters()[0]->name == 'file') {
+			foreach ($this->successfulUploads as $successfulUpload) {
+				$successfulUpload = ($asObject) ? json_decode(json_encode($successfulUpload)) : $successfulUpload;
+				$reflector->invoke($successfulUpload);
+			}
+		} else {
+			throw new InvalidArgumentException;
+		}
+	}
+
+	/**
+	 * Listener for failure.
+	 *
+	 * @param Closure $callback
+	 * @param boolean | $asObject
+	 * @return void
+	 */
+	public function error(Closure $callback, $asObject = true)
+	{
+		$reflector = new ReflectionFunction($callback);
+
+		if (isset($reflector->getParameters()[0]) && $reflector->getParameters()[0]->name == 'file') {
+			foreach ($this->failureUploads as $failureUpload) {
+				$failureUpload = ($asObject) ? json_decode(json_encode($failureUpload)) : $failureUpload;
+				$reflector->invoke($failureUpload);
+			}
+		} else {
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -508,8 +567,12 @@ class Upload
 	 */
 	protected function maxSizeOk($file)
 	{
-		if (empty($this->maxSize) && empty($this->fileSizes)) {
+		if (empty($this->fileSizes)) {
 			return;
+		}
+
+		if (empty($this->maxSize)) {
+			return true;
 		}
 
 		if ($file['size'] < ($this->maxSize * 1000)) {
@@ -550,7 +613,7 @@ class Upload
 	protected function fileIsNotValid(&$file)
 	{
 		if ($file['error'] !== UPLOAD_ERR_OK) {
-	    	$this->_debug[] = 'The file ' . $file['name'] . ' couldn\'t be uploaded. Please ensure 
+	    	$this->_debug[] = 'The file ' . $file['name'] . ' couldn\'t be uploaded. Please ensure
 	    							your php.ini file allow this size of files to be uploaded';
 	    	$file['errorMessage'] = 'Invalid File: ' . $file['name'];
 	    	return false;
