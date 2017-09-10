@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Source\Upload;
 
-if(Upload::formIsSubmitted())
+if(Upload::submitted())
 {
   $upload = new Upload('file'); // give the constructor the name of the html input field
 
@@ -12,13 +12,13 @@ if(Upload::formIsSubmitted())
 
   $upload->addRules([
             'size' => 1500,
-            'extensions' => 'jpg|png|pdf',
+            'extensions' => 'jpg|png',
           ])->customErrorMessages([
             'size' => 'Please upload files that are less than 2MB size',
             'extensions' => 'Please upload only jpg, png or pdf'
           ]);
 
-  $upload->encryptFileNames(true)->only('jpg');
+  $upload->encryptFileNames(true)->only('png|png');
 
   $upload->start();
 
@@ -48,7 +48,7 @@ if(Upload::formIsSubmitted())
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <?php
-if(Upload::formIsSubmitted())
+if(Upload::submitted())
 {
   if($upload->unsuccessfulFilesHas())
   {

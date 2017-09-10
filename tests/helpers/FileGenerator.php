@@ -4,7 +4,66 @@ namespace Tests\Helpers;
 
 class FileGenerator 
 {
-	public function path()
+	/**
+	 * Generates a random file.
+	 *
+	 * @return array
+	 */
+	public function single($inputName) 
+	{
+		return [
+    		$inputName => [
+        		'name' => [$this->name()],
+        		'type' => [$this->mimeType()],
+        		'size' => [$this->size()],
+        		'tmp_name' => [$this->tempName()],
+        		'error' => [0]
+    		]
+    	];
+	}
+
+	/**
+	 * Generates random files.
+	 *
+	 * @return array
+	 */
+	public function multiple($inputName) 
+	{
+		return [
+    		$inputName => [
+        		'name' => [$this->name(), $this->name()],
+        		'type' => [$this->mimeType(), $this->mimeType()],
+        		'size' => [$this->size(), $this->size()],
+        		'tmp_name' => [$this->tempName(), $this->tempName()],
+        		'error' => [0,0]
+    		]
+    	];
+	}
+
+	/**
+	 * Generates an invalid file.
+	 *
+	 * @return array
+	 */
+	public function invalidFile($inputName)
+	{
+		return [
+    		$inputName => [
+        		'name' => [],
+        		'type' => [$this->mimeType(), $this->mimeType()],
+        		'size' => [$this->size(), $this->size()],
+        		'tmp_name' => [$this->tempName(), $this->tempName()],
+        		'error' => [0,0]
+    		]
+    	];
+	}
+
+	/**
+	 * Generates a random file path.
+	 *
+	 * @return string
+	 */
+	protected function path()
 	{
 		$index = mt_rand(0, 2);
 		
@@ -13,7 +72,12 @@ class FileGenerator
 		return $paths[$index];
 	}
 
-	public function name() 
+	/**
+	 * Generates a random filenmae.
+	 *
+	 * @return string
+	 */
+	protected function name() 
 	{
 		$index = mt_rand(0, 2);
 		
@@ -22,7 +86,12 @@ class FileGenerator
 		return $names[$index];
 	}
 
-	public function mimeType() 
+	/**
+	 * Generates a random mimeType.
+	 *
+	 * @return string
+	 */
+	protected function mimeType() 
 	{
 		$index = mt_rand(0, 3);
 		
@@ -31,12 +100,22 @@ class FileGenerator
 		return $mimeType[$index];
 	}
 
-	public function size()
+	/**
+	 * Generates a random file size.
+	 *
+	 * @return integer
+	 */
+	protected function size()
 	{
 		return mt_rand(10, 5000);
 	}
 
-	public function tempName() 
+	/**
+	 * Generates a random tempName.
+	 *
+	 * @return string
+	 */
+	protected function tempName() 
 	{
 		$index = mt_rand(0, 5);
 		
@@ -50,31 +129,5 @@ class FileGenerator
 		];
 
 		return $tmp_names[$index];
-	}
-
-	public function single($inputName) 
-	{
-		return [
-            		$inputName => [
-                		'name' => [$this->name()],
-                		'type' => [$this->mimeType()],
-                		'size' => [$this->size()],
-                		'tmp_name' => [$this->tempName()],
-                		'error' => [0]
-            		]
-        	];
-	}
-
-	public function multiple($inputName) 
-	{
-		return [
-            		$inputName => [
-                		'name' => [$this->name(), $this->name()],
-                		'type' => [$this->mimeType(), $this->mimeType()],
-                		'size' => [$this->size(), $this->size()],
-                		'tmp_name' => [$this->tempName(), $this->tempName()],
-                		'error' => [0,0]
-            		]
-        	];
 	}
 }
