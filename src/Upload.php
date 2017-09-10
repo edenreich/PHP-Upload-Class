@@ -34,7 +34,7 @@ class Upload
 	 * @var array
 	 */
 	protected $files = [];
-	
+
 	/**
 	 * Stores all the file names.
 	 *
@@ -48,28 +48,28 @@ class Upload
 	 * @var array
 	 */
 	protected $fileTypes = [];
-	
+
 	/**
 	 * Stores all the file temporary names.
 	 *
 	 * @var array
 	 */
 	protected $fileTempNames = [];
-			
+
 	/**
 	 * Stores all the file extensions.
 	 *
 	 * @var array
 	 */
 	protected $fileExtensions = [];
-			
+
 	/**
 	 * Stores all the file errors.
 	 *
 	 * @var array
 	 */
 	protected $fileErrors = [];
-	
+
 	/**
 	 * Stores all the file sizes.
 	 *
@@ -98,7 +98,7 @@ class Upload
 	 * @var integer
 	 */
 	protected $maxSize = null;
-	
+
 	/**
 	 * If the upload is multiple files.
 	 *
@@ -158,8 +158,8 @@ class Upload
 	 */
 	public function sortFiles(array $files)
 	{
-		$sortedFiles = []; 
-	
+		$sortedFiles = [];
+
 		foreach ($files as $property => $values) {
 			foreach ($values as $key => $value) {
 				$sortedFiles[$key] = [
@@ -174,7 +174,6 @@ class Upload
 					'success' => false,
 					'errorMessage' => ''
 				];
-				
 			}
 		}
 
@@ -252,7 +251,7 @@ class Upload
 		if (count($_FILES[$input]['name']) > 1) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -272,7 +271,7 @@ class Upload
 			$extension = strtolower($str);
 			$extensions[] = $extension;
 		}
-		
+
 		return $extensions;
 	}
 
@@ -309,7 +308,7 @@ class Upload
 		if (! file_exists($this->directoryPath)) {
 			throw new FolderNotExistException;
 		}
-			
+
 		foreach ($this->files as $key => &$file) {
 			if ($this->fileIsNotValid($file)) {
 				$file['success'] = false;
@@ -353,19 +352,6 @@ class Upload
 	}
 
 	/**
-	 * This method decrypt the file name based on the key you specfied.
-	 *
-	 * @param $encryptedName
-	 * 
-	 * @return String | Decrypted File Name 
-	 */
-	public function decryptFileName($encryptedName)
-	{
-		$encryptedName = str_replace('#', '/' , $base64EncodedString);
-		return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, static::KEY, base64_decode($encryptedCode), MCRYPT_MODE_ECB));
-	}
-
-	/**
 	 * Save the file/files with the random name on the server(optional for security uses).
 	 *
 	 * @param boolean | $encrypt
@@ -379,8 +365,8 @@ class Upload
 
 		if (empty(static::KEY)) {
 			throw new InvalidEcryptionKeyException;
-		}	
-		
+		}
+
 		if (! empty($this->fileInput)) {
 			foreach($this->fileNames as $key => $fileName) {
 				$encryptedName = $this->encrypt($fileName);
@@ -400,7 +386,7 @@ class Upload
 	 * @param string | $fileName
 	 * @return string
 	 */
-	public function encrypt($fileName) 
+	public function encrypt($fileName)
 	{
 	    $encryptMethod = "AES-256-CBC";
 
@@ -466,7 +452,7 @@ class Upload
 	 *
 	 * @return array
 	 */
-	public function getAllowedExtensions() 
+	public function getAllowedExtensions()
 	{
 		return ($this->allowedExtensions) ?: '';
 	}
@@ -491,14 +477,14 @@ class Upload
 		if (empty($this->allowedExtensions) && empty($this->fileExtensions)) {
 			return;
 		}
-		
+
 		if (in_array($file['extension'], $this->allowedExtensions)) {
 			return true;
 		}
-		
+
 		$file['error'] = 1;
 		$file['success'] = false;
-		$file['errorMessage'] = ($this->hasCustomMessage('extensions')) ? $this->customErrorMessages['extensions'] 
+		$file['errorMessage'] = ($this->hasCustomMessage('extensions')) ? $this->customErrorMessages['extensions']
 																		: $this->defaultErrorMessage('extensions');
 		return false;
 	}
@@ -525,15 +511,15 @@ class Upload
 		if (empty($this->maxSize) && empty($this->fileSizes)) {
 			return;
 		}
-			
+
 		if ($file['size'] < ($this->maxSize * 1000)) {
 			return true;
 		}
-		
-		$file['errorMessage'] = ($this->hasCustomMessage('size')) ? $this->customErrorMessages['size'] 
+
+		$file['errorMessage'] = ($this->hasCustomMessage('size')) ? $this->customErrorMessages['size']
 																  : $this->defaultErrorMessage('size', $file);
-		
-		return false;	
+
+		return false;
 	}
 
 	/**
@@ -546,9 +532,9 @@ class Upload
 	protected function defaultErrorMessage($type, $file = null)
 	{
 		switch ($type) {
-			case 'size': 
+			case 'size':
 				return "Sorry, but your file, " . $file['name'] . ", is too big. maximal size allowed " . $this->maxSize . " Kbyte";
-			case 'extensions': 
+			case 'extensions':
 				return "Sorry, but only " . implode( ", " , $this->allowedExtensions ) . " files are allowed.";
 		}
 
@@ -573,13 +559,13 @@ class Upload
 		if ($this->extensionsAllowed($file) && $this->maxSizeOk($file)) {
 			return false;
 		}
-	
+
 		return true;
 	}
 
 	/**
 	 * This method checks if the upload was unsuccessful.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function unsuccessfulFilesHas()
@@ -589,13 +575,13 @@ class Upload
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * This method checks if the upload was successful.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function successfulFilesHas()
@@ -605,7 +591,7 @@ class Upload
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -622,27 +608,27 @@ class Upload
 			if ($file['success'] == true) {
 				continue;
 			}
-			
+
 			$failedFile = new stdClass;
-			
+
 			$failedFile->name = $file['name'];
 
 			if ($this->shouldBeEncrypted($file)) {
 				$failedFile->encryptedName = $file['encrypted_name'];
 			}
-			
+
 			$failedFile->type = $file['type'];
 			$failedFile->extension = $file['extension'];
 			$failedFile->size = $file['size'];
 			$failedFile->error = $file['error'];
-			
+
 			if (! empty($file['errorMessage'])) {
 				$failedFile->errorMessage = $file['errorMessage'];
 			}
 
 			$failedUploads[] = $failedFile;
 		}
-						
+
 		return $failedUploads;
 	}
 
@@ -659,28 +645,28 @@ class Upload
 			if ($file['success'] == false) {
 				continue;
 			}
-			
+
 			$successfulFile = new stdClass();
-			
+
 			$successfulFile->name = $file['name'];
 
 			if ($this->shouldBeEncrypted($file)) {
 				$successfulFile->encryptedName = $file['encrypted_name'];
 			}
-			
+
 			$successfulFile->type = $file['type'];
 			$successfulFile->extension = $file['extension'];
 			$successfulFile->size = $file['size'];
 
 			$successfulUploads[] = $successfulFile;
 		}
-						
+
 		return $successfulUploads;
 	}
 
 	/**
 	 * This method displays the errors formated nicely with bootstraps.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function displayErrors()
@@ -692,7 +678,7 @@ class Upload
 
 	/**
 	 * This method displays the errors formated nicely with bootstraps.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function displaySuccess()
@@ -705,7 +691,7 @@ class Upload
 
 	/**
 	 * Checks if an upload form has been submitted.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public static function submitted()
@@ -713,7 +699,7 @@ class Upload
 		if (empty($_FILES)) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -733,7 +719,7 @@ class Upload
 	}
 
 	/**
-	 * A simple gererator of a random key to use for encrypting 
+	 * A simple gererator of a random key to use for encrypting.
 	 *
 	 * @return void
 	 */
