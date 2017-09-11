@@ -32,10 +32,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Reich\\Upload\\Laravel\\Providers\\UploadServiceProvider"
+                "Reich\\Upload\\Laravel\\UploadServiceProvider"
             ],
             "aliases": {
-                "Upload": "Reich\\Upload\\Source\\Laravel\\Facades\\UploadFacade"
+                "Upload": "Reich\\Upload\\Laravel\\UploadFacade"
             }
         }
     },
