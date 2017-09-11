@@ -45,22 +45,20 @@ If you don't use v5.5+ you may import the necessary files path in your /config/a
       /*
        * Package Service Providers...
        */
-      Reich\Upload\Laravel\Providers\UploadServiceProvider::class,
+      Reich\Upload\Laravel\UploadServiceProvider::class,
     ],
 
     "aliases" => [
-      "Upload" => Reich\Upload\Source\Laravel\Facades\UploadFacade::class,
+      "Upload" => Reich\Upload\Laravel\UploadFacade::class,
     ]
   ...
 ```
 
-# How to use this class
+# Usage
 
-## Few things need to be done first:
-#### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
-#### 2) Make sure you change the random 32 Character key inside the class file in Source\Upload namespace.
-Note: You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
-#### 3) Please open the example /demo/index.php file I created to follow and get a better understanding
+##### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
+##### 2) Generate an encryption key contains 32 characters or use Reich\Upload::generateMeAKey(); helper.
+##### 3) Please open the example /demo/index.php file I created to follow and get a better understanding
 
 Make sure the form is submitted:
 ```php
