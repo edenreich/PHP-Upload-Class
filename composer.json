@@ -1,6 +1,6 @@
 {
     "name":              "reich/upload",
-    "description":       "A great class to upload your file or files to the server",
+    "description":       "A great class to upload your file or files to the server, could be integreted with laravel",
     "type":              "library",
     "license":           "MIT",
     "homepage":          "https://github.com/edenreich",
@@ -16,11 +16,11 @@
         "php": ">=5.6.0"
     },
 	"require-dev": {
-		"phpunit/phpunit": "~5.7"
-	},
+        "phpunit/phpunit": "~5.7"
+    },
 	"autoload": {
 		"psr-4": {
-			"Source\\": "src/" 
+			"Reich\\": "src/" 
 		}
 	},
 	"autoload-dev": {
@@ -28,6 +28,17 @@
 			"Tests\\": "tests/"
 		}
 	},
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Upload\\Source\\Laravel\\Providers\\UploadServiceProvider"
+            ],
+            "aliases": {
+                "Upload": "Reich\\Upload\\Source\\Laravel\\Facades\\UploadFacade"
+            }
+        }
+    },
 	"config": {
         "preferred-install": "dist",
         "sort-packages": true,
