@@ -16,6 +16,6 @@ class UploadServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Upload::class);
 
-        $this->app->alias('upload', Upload::class);
+        $this->app->singleton('upload', Upload::class);
     }
 }
