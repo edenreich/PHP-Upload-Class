@@ -4,7 +4,7 @@
     "type":              "library",
     "license":           "MIT",
     "homepage":          "https://github.com/edenreich",
-    "keywords":          ["upload", "files", "file"],
+    "keywords":          ["upload", "files", "file", "laravel"],
     "authors": [
         {
             "name":     "Eden Reich",
