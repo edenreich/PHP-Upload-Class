@@ -11,8 +11,8 @@ class UploadFacade extends Facade
      *
      * @return string
      */
-    protected static function getFacadeAccessor() 
-    { 
-        return 'upload'; 
+    protected static function getFacadeAccessor()
+    {
+        return 'upload';
     }
 }

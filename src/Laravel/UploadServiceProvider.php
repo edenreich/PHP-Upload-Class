@@ -14,8 +14,8 @@ class UploadServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Upload::class, function () {
-            return new Upload();
-        });
+        $this->app->singleton(Upload::class);
+
+        $this->app->alias('upload', Upload::class);
     }
 }
