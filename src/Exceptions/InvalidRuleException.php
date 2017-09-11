@@ -1,6 +1,6 @@
 <?php
 
-namespace Source\Exceptions;
+namespace Reich\Exceptions;
 
 class InvalidRuleException extends \Exception 
 {

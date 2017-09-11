@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Source\Upload;
+use Reich\Upload;
 
 if(Upload::submitted()) {
   // give the constructor the name of the html input field
@@ -24,30 +24,11 @@ if(Upload::submitted()) {
 
   $upload->success(function($file) {
     // handle successful uploads.
-  }, false);
+  });
 
   $upload->error(function($file) {
     // handle faliure uploads.
-  }, false);
-
-  /*
-
-  Or
-
-  if ($upload->unsuccessfulFilesHas()) {
-    foreach ($upload->errorFiles() as $file) {
-       // now you have the $file object to format the message how you prefer
-    }
-  }
-
-  if ($upload->successfulFilesHas()) {
-     foreach ($upload->successFiles() as $file) {
-        // now you have the $file object to format the message how you prefer
-     }
-  }
-
-  */
-
+  });
 }
 
 ?><!DOCTYPE html>
@@ -70,9 +51,16 @@ if (Upload::submitted()) {
 
 ?>
 <body>
-  <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
-		<input type="file" name="file[]" multiple>
-		<input type="submit" value="Upload">
-	</form>
+  <br/>
+  <div class="container">
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+    		<input type="file" name="file[]" class="form-control-file" multiple required>
+  		</div>
+      <div class="form-group">
+        <input type="submit" value="Upload" class="btn btn-primary">
+  	 </div>
+    </form>
+</div>
 </body>
 </html>

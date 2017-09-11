@@ -1,22 +1,22 @@
 <?php
 
-namespace Source;
+namespace Reich;
 
 use Closure;
 use stdClass;
 use ReflectionFunction;
 use InvalidArgumentException;
-use Source\Exceptions\InvalidRuleException;
-use Source\Exceptions\FolderNotExistException;
-use Source\Exceptions\PermissionDeniedException;
-use Source\Exceptions\InvalidEncryptionKeyException;
+use Reich\Exceptions\InvalidRuleException;
+use Reich\Exceptions\FolderNotExistException;
+use Reich\Exceptions\PermissionDeniedException;
+use Reich\Exceptions\InvalidEncryptionKeyException;
 
 /**
  * Upload class that handles multiple file uploads.
  *
  * @author Eden Reich <eden.reich@gmail.com>
  * @license MIT
- * @version 1.1
+ * @version 2.0
  */
 
 class Upload

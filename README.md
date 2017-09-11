@@ -31,16 +31,34 @@ with composer just run:
 ```shell 
 composer require reich/upload
 ```
+
 or
-just copy it manually into your project: Upload.php is the file you will need.
 
-# How to use this class
+You can also download src/Upload.php and simply use it. 
 
-## Few things need to be done first:
-#### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
-#### 2) Make sure you change the random 32 Character key inside the class file in Source\Upload namespace.
-Note: You can also use Upload::generateMeAKey() command, then just copy it and past it in the KEY const.
-#### 3) Please open the example index.php file I created to follow and get a better understanding
+# Laravel Package
+This class is fully integrated into laravel framework using Laravel Auto-Discovery.
+If you don't use v5.5+ you may import the necessary files path in your /config/app.php file manually:
+```php
+  ...
+    "providers" => [
+      /*
+       * Package Service Providers...
+       */
+      Reich\Upload\Laravel\UploadServiceProvider::class,
+    ],
+
+    "aliases" => [
+      "Upload" => Reich\Upload\Laravel\UploadFacade::class,
+    ]
+  ...
+```
+
+# Usage
+
+##### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
+##### 2) Generate an encryption key contains 32 characters or use Reich\Upload::generateMeAKey(); helper.
+##### 3) Please open the example /demo/index.php file I created to follow and get a better understanding
 
 Make sure the form is submitted:
 ```php

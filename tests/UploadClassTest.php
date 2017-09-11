@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Source\Upload;
+use Reich\Upload;
 use Tests\Helpers\FileGenerator;
 
 class UploadClassTest extends \PHPUnit_Framework_TestCase
@@ -97,7 +97,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Source\Exceptions\InvalidRuleException
+	 * @expectedException \Reich\Exceptions\InvalidRuleException
 	 */
 	public function an_exception_is_throwen_when_a_rule_that_does_not_exist_is_applied()
 	{
@@ -114,7 +114,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Source\Exceptions\FolderNotExistException
+	 * @expectedException \Reich\Exceptions\FolderNotExistException
 	 */
 	public function if_a_folder_is_not_present_an_exception_is_throwen()
 	{
@@ -129,7 +129,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Source\Exceptions\PermissionDeniedException
+	 * @expectedException \Reich\Exceptions\PermissionDeniedException
 	 */
 	public function if_a_server_not_allowing_the_creation_of_a_folder_an_exception_is_throwen()
 	{
