@@ -1,6 +1,7 @@
 <p align="center"><img src="https://s11.postimg.org/6rrm3zatv/elephantsmall.jpg"></p>
 
-# Upload.php
+## Upload.php
+<br/>
 <p>
   <a href="#">
     <img src="https://travis-ci.org/edenreich/PHP-Upload-Class.svg?branch=master">
@@ -26,7 +27,7 @@
 </p>
 PHP Class for uploading file or files to the server
 
-# Installing
+## Installing
 with composer just run:
 ```shell 
 composer require reich/upload
@@ -36,7 +37,7 @@ or
 
 You can also download src/Upload.php and simply use it. 
 
-# Laravel Package
+## As a Package for Laravel
 This class is fully integrated into laravel framework using Laravel Auto-Discovery.
 If you don't use v5.5+ you may import the necessary files path in your /config/app.php file manually:
 ```php
@@ -54,7 +55,7 @@ If you don't use v5.5+ you may import the necessary files path in your /config/a
   ...
 ```
 
-# Usage
+## Usage
 
 ##### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
 ##### 2) Generate an encryption key contains 32 characters or use Reich\Upload::generateMeAKey(); helper.
