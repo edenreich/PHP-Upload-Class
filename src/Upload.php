@@ -709,7 +709,7 @@ class Upload
 				continue;
 			}
 
-			$successfulFile = new stdClass();
+			$successfulFile = new stdClass;
 
 			$successfulFile->name = $file['name'];
 
