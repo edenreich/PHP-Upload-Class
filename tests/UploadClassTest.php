@@ -86,7 +86,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 		$upload = new Upload('file');
 
-		$dirPath = __DIR__. '/tmp';
+		$dirPath = __DIR__ . '/tmp';
 
 		$upload->setDirectory($dirPath)->create(true);
 
@@ -122,22 +122,7 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 		$upload = new Upload('file');
 
-		$upload->setDirectory('/invalid/directory/path');
-
-		$upload->start();
-	}
-
-	/**
-	 * @test
-	 * @expectedException \Reich\Exceptions\PermissionDeniedException
-	 */
-	public function if_a_server_not_allowing_the_creation_of_a_folder_an_exception_is_throwen()
-	{
-		$_FILES = $this->fileGenerator->single('file');
-
-		$upload = new Upload('file');
-
-		$upload->setDirectory('/invalid/directory/path')->create(true);
+		$upload->setDirectory('invalid/directory/path');
 
 		$upload->start();
 	}
