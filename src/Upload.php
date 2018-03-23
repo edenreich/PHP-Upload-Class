@@ -705,41 +705,6 @@ class Upload
 	}
 
 	/**
-	 * A simple gererator of a random
-	 * key to use for encrypting.
-	 *
-	 * @return void
-	 */
-	public static function generateMeAKey()
-	{
-		$instance = new static;
-		$key = $instance->randomString();
-
-		echo hash('sha256', $key);
-	}
-
-	/**
-	 * Creates a random string.
-	 *
-	 * @param int | $length
-	 * @return string
-	 */
-	protected function randomString($length = 64)
-	{
-		$string = '';
-
-        while (($len = strlen($string)) < $length) {
-            $size = $length - $len;
-
-            $bytes = random_bytes($size);
-
-            $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
-        }
-
-        return $string;
-	}
-
-	/**
 	 * Gets the errors array to give 
 	 * feedback to the developer.
 	 *
