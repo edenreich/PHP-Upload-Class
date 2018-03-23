@@ -463,6 +463,7 @@ class Upload
 	/**
 	 * Checks if extensions allowed.
 	 *
+	 * @param array | $file
 	 * @return boolean
 	 */
 	protected function extensionsAllowed(&$file)
