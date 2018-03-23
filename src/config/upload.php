@@ -29,6 +29,7 @@ return [
 
     ],
 
+
      /*
     |--------------------------------------------------------------------------
     | Disks
@@ -68,7 +69,27 @@ return [
     |
     */
 
-    'encryption_key' => 'fc01e8d00a90c1d392ec45459deb6f12'
+    'encryption_key' => 'fc01e8d00a90c1d392ec45459deb6f15',
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rules
+    |--------------------------------------------------------------------------
+    |
+    | Here you can set the rules for the size and the allowed extensions.
+    |
+    */
+
+    'rules' => [
+        'size' => 2000, // in Kilobytes
+        'extensions' => 'jpg|png'
+    ],
+
+    'messages' = [
+        'size' => 'Please upload files that are less than 2MB size',
+        'extensions' => 'Please upload only jpg, png or pdf'
+    ]
 
 
 

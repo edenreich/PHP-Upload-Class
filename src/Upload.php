@@ -108,7 +108,7 @@ class Upload
 	/**
 	 * If the upload is multiple files.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $isMultiple = false;
 
@@ -153,7 +153,6 @@ class Upload
 	 * - Sorts the files.
 	 *
 	 * @param string | $input
-	 * @param array | $config
 	 * @return void
 	 */
 	public function __construct($input = null)
@@ -196,7 +195,7 @@ class Upload
 	 * Checks if its files or file.
 	 *
 	 * @param string | $input
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isMultiple($input)
 	{
@@ -273,12 +272,12 @@ class Upload
 					$this->maxSize = @intval($value);
 					break;
 				case 'extensions':
-					if(is_array($value)) {
+					if (is_array($value)) {
 						$this->allowedExtensions = $value;
 						break;
 					}
 
-					if($extensions = explode('|', $value)) {
+					if ($extensions = explode('|', $value)) {
 						$this->allowedExtensions = $extensions;
 						break;
 					}
@@ -352,27 +351,57 @@ class Upload
 		foreach ($this->files as $key => &$file) {
 			if ($this->fileIsNotValid($file)) {
 				$file['success'] = false;
-	    		continue;
-	    	}
+	    			continue;
+	    		}
 
-			$fileToUpload = ($this->shouldBeEncrypted($file)) ? $this->directoryPath . $file['encrypted_name']
-															  : $this->directoryPath . $file['name'];
 
-			if (! move_uploaded_file($file['tmp_name'], $fileToUpload)) {
-				$file['success'] = false;
+			if (! empty($this->config) && $this->config['protocols']['default'] == 'ftp') {
+				$uploaded = $this->uploadUsingFtp($file);
+			} else {
+				$uploaded = $this->uploadUsingHttp($file);
+			}
+
+			if ($uploaded) {
+				$file['success'] = true;
+	    			$this->successfulUploads[] = $file;
+	    		} else {
+	    			$file['success'] = false;
 				$this->failureUploads[] = $file;
-	    	} else {
-	    		$file['success'] = true;
-	    		$this->successfulUploads[] = $file;
-	    	}
+	    		}
 		}
+	}
+
+	/**
+	 * Uploads a file using ftp protocol.
+	 *
+	 * @param array | $file
+	 * @return bool
+	 */
+	protected function uploadUsingFtp(&$file) 
+	{
+		// @todo upload the file using ftp protocol
+	}
+
+	/**
+	 * Uploads a file using http protocol.
+	 *
+	 * @param array | $file
+	 * @return bool
+	 */
+	protected function uploadUsingHttp(&$file) 
+	{
+		if ($this->shouldBeEncrypted($file)) {
+    			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['encrypted_name']);
+    		} else {
+    			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['name']);
+    		}
 	}
 
 	/**
 	 * Listener for success.
 	 *
 	 * @param Closure | $callback
-	 * @param boolean | $asObject
+	 * @param bool | $asObject
 	 * @return void
 	 */
 	public function success(Closure $callback, $asObject = true)
@@ -398,7 +427,7 @@ class Upload
 	 * Listener for failure.
 	 *
 	 * @param Closure $callback
-	 * @param boolean | $asObject
+	 * @param bool | $asObject
 	 * @return void
 	 */
 	public function error(Closure $callback, $asObject = true)
@@ -424,7 +453,7 @@ class Upload
 	/**
 	 * Creates the directory if not exists.
 	 * 
-	 * @param boolean | $create
+	 * @param bool | $create
 	 * @return void
 	 */
 	public function create($create = false)
@@ -464,7 +493,7 @@ class Upload
 	 * Checks if extensions allowed.
 	 *
 	 * @param array | $file
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function extensionsAllowed(&$file)
 	{
@@ -487,7 +516,7 @@ class Upload
 	 * Checks if there are custom message by type.
 	 *
 	 * @param string | $type
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function hasCustomMessage($type)
 	{
@@ -498,7 +527,7 @@ class Upload
 	 * Checks if the file size allowed.
 	 *
 	 * @param array | $file
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function maxSizeOk($file)
 	{
@@ -543,7 +572,7 @@ class Upload
 	 * Checks if file validation fails.
 	 *
 	 * @param array | $file
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function fileIsNotValid(&$file)
 	{
@@ -564,7 +593,7 @@ class Upload
 	/**
 	 * Checks if the upload was unsuccessful.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function unsuccessfulFilesHas()
 	{
@@ -580,7 +609,7 @@ class Upload
 	/**
 	 * Checks if the upload was successful.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function successfulFilesHas()
 	{
@@ -694,7 +723,7 @@ class Upload
 	 * Checks if an upload 
 	 * form has been submitted.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function submitted()
 	{
