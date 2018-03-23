@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'drivers' => [
+    'protocols' => [
 
         'default' => 'http',
 
