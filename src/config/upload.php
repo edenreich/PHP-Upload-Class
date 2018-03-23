@@ -86,7 +86,7 @@ return [
         'extensions' => 'jpg|png'
     ],
 
-    'messages' = [
+    'messages' => [
         'size' => 'Please upload files that are less than 2MB size',
         'extensions' => 'Please upload only jpg, png or pdf'
     ]
