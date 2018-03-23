@@ -5,11 +5,15 @@ namespace Reich;
 use Closure;
 use stdClass;
 use ReflectionFunction;
+
+// Traits
+use Reich\Traits\Encrypter;
+
+// Exceptions
 use InvalidArgumentException;
 use Reich\Exceptions\InvalidRuleException;
 use Reich\Exceptions\FolderNotExistException;
 use Reich\Exceptions\PermissionDeniedException;
-use Reich\Exceptions\InvalidEncryptionKeyException;
 
 /**
  * Upload class that handles multiple file uploads.
@@ -21,12 +25,7 @@ use Reich\Exceptions\InvalidEncryptionKeyException;
 
 class Upload
 {
-	/**
-	 * Stores the encryption key.
-	 *
-	 * @var const
-	 */	
-	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12';
+	use Encrypter;
 
 	/**
 	 * Stores the uploaded source input.
@@ -112,13 +111,6 @@ class Upload
 	 * @var boolean
 	 */
 	protected $isMultiple = false;
-
-	/**
-	 * Stores the file types that should be encrypted.
-	 *
-	 * @var array
-	 */
-	protected $fileTypesToEncrypt = [];
 
 	/**
 	 * Stores all custom error messages.
@@ -430,111 +422,6 @@ class Upload
 	}
 
 	/**
-	 * Checks if the file should be encrypted.
-	 *
-	 * @param array | $file
-	 * @return boolean
-	 */
-	protected function shouldBeEncrypted($file)
-	{
-		return $file['encryption'] && $this->inOnlyArray($file);
-	}
-
-	/**
-	 * Checks if only specific 
-	 * file extensions were set.
-	 *
-	 * @return boolean
-	 */
-	protected function inOnlyArray($file)
-	{
-		if (empty($this->fileTypesToEncrypt)) {
-			return $file['encryption'];
-		}
-
-		return in_array($file['extension'], $this->fileTypesToEncrypt);
-	}
-
-	/**
-	 * Save the file/files with the 
-	 * encrypted names on the server.
-	 *
-	 * @param boolean | $encrypt
-	 * @return $this
-	 */
-	public function encryptFileNames($encrypt = false)
-	{
-		if ($encrypt == false) {
-			return;
-		}
-
-		if (empty(static::KEY)) {
-			throw new InvalidEcryptionKeyException;
-		}
-
-		if (! empty($this->fileInput)) {
-			foreach($this->fileNames as $key => $fileName) {
-				$encryptedName = $this->encrypt($fileName);
-				$extension = $this->fileExtensions[$key];
-
-				$this->files[$key]['encrypted_name'] = $encryptedName . "." . $extension;
-				$this->files[$key]['encryption'] = true;
-			}
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Encrypts the file name.
-	 *
-	 * @param string | $fileName
-	 * @return string
-	 */
-	public function encrypt($fileName)
-	{
-	    $encryptMethod = "AES-256-CBC";
-
-	    $output = @base64_encode(openssl_encrypt($fileName, $encryptMethod, static::KEY));
-
-	    return $output;
-	}
-
-	/**
-	 * Decrypts the file name.
-	 *
-	 * @param string | $fileName
-	 * @return string
-	 */
-	public function decrypt($fileName)
-	{
-		$encryptMethod = "AES-256-CBC";
-
-		return openssl_decrypt(@base64_decode($fileName), $encryptMethod, static::KEY);
-	}
-
-	/**
-	 * Allows to specify 
-	 * which file types to encrypt.
-	 *
-	 * @param mixed | $types
-	 * @return void
-	 */
-	public function only($types)
-	{
-		if (is_string($types) && $extensions = explode('|', $types)) {
-			$this->fileTypesToEncrypt = $extensions;
-			return;
-		}
-
-		if (! is_array($types)) {
-			$this->fileTypesToEncrypt = func_get_args();
-		} else {
-			$this->fileTypesToEncrypt = $types;
-		}
-	}
-
-	/**
 	 * Creates the directory if not exists.
 	 * 
 	 * @param boolean | $create
@@ -801,7 +688,6 @@ class Upload
 	      echo '<div class="alert alert-success">' . $file->name .' uploaded successfuly</div><br/>';
 	    }
 	}
-
 
 	/**
 	 * Checks if an upload 
