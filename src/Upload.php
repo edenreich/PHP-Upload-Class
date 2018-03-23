@@ -21,7 +21,12 @@ use Reich\Exceptions\InvalidEncryptionKeyException;
 
 class Upload
 {
-	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12'; // Please set your key for encryption here.
+	/**
+	 * Stores the encryption key.
+	 *
+	 * @var const
+	 */	
+	const KEY = 'fc01e8d00a90c1d392ec45459deb6f12';
 
 	/**
 	 * Stores the uploaded source input.
@@ -144,14 +149,16 @@ class Upload
 	protected $config = [];
 
 	/**
-	 * Debug informations
+	 * Debug informations.
 	 *
 	 * @var array
 	 */
 	private $_debug = [];
 
 	/**
-	 * Setting all the attributes with file data and check if it's single or multiple upload.
+	 * - Sets all of the attributes with file data.
+	 * - Checks if it's single or multiple upload.
+	 * - Sorts the files.
 	 *
 	 * @param string | $input
 	 * @param array | $config
@@ -194,7 +201,7 @@ class Upload
 	}
 
 	/**
-	 * This method checks if its files or file.
+	 * Checks if its files or file.
 	 *
 	 * @param string | $input
 	 * @return boolean
@@ -229,7 +236,8 @@ class Upload
 	}
 
 	/**
-	 * This method organized the files in a an array of keys for each file.
+	 * Organizes the files 
+	 * in a an array of keys for each file.
 	 *
 	 * @param array | $files
 	 * @return array
@@ -259,7 +267,8 @@ class Upload
 	}
 
 	/**
-	 * This method allow the developer to set some rules for the upload process.
+	 * Allows to set rules 
+	 * for the upload process.
 	 *
 	 * @param array | $rules
 	 * @return $this
@@ -294,7 +303,7 @@ class Upload
 	}
 
 	/**
-	 * This method allows the developer to set custom error messages.
+	 * Allows the to set custom error messages.
 	 *
 	 * @param array | $errorMessages
 	 * @return void
@@ -319,8 +328,9 @@ class Upload
 	}
 
 	/**
-	 * Set the path directory where you want to upload the files(if not specfied file/files
-	 * will be uploaded to the current directory).
+	 * Sets the directory path where you 
+	 * want to upload the files(if not specfied,
+	 * files will be uploaded to the current directory).
 	 *
 	 * @param string | $path
 	 * @return $this
@@ -333,7 +343,7 @@ class Upload
 	}
 
 	/**
-	 * start the upload process.
+	 * Starts the upload process.
 	 *
 	 * @return void
 	 */
@@ -378,11 +388,16 @@ class Upload
 		$reflector = new ReflectionFunction($callback);
 
 		if (isset($reflector->getParameters()[0]) && $reflector->getParameters()[0]->name == 'file') {
+			
 			foreach ($this->successfulUploads as $successfulUpload) {
-				$successfulUpload = ($asObject) ? json_decode(json_encode($successfulUpload)) : $successfulUpload;
+				$successfulUpload = ($asObject) ? json_decode(json_encode($successfulUpload)) 
+								: $successfulUpload;
+				
 				$reflector->invoke($successfulUpload);
 			}
+
 		} else {
+			
 			throw new InvalidArgumentException;
 		}
 	}
@@ -399,17 +414,23 @@ class Upload
 		$reflector = new ReflectionFunction($callback);
 
 		if (isset($reflector->getParameters()[0]) && $reflector->getParameters()[0]->name == 'file') {
+			
 			foreach ($this->failureUploads as $failureUpload) {
-				$failureUpload = ($asObject) ? json_decode(json_encode($failureUpload)) : $failureUpload;
+				$failureUpload = ($asObject) ? json_decode(json_encode($failureUpload)) 
+							     : $failureUpload;
+				
 				$reflector->invoke($failureUpload);
 			}
+
 		} else {
+			
 			throw new InvalidArgumentException;
+		
 		}
 	}
 
 	/**
-	 * This method checks if the file should be encrypted.
+	 * Checks if the file should be encrypted.
 	 *
 	 * @param array | $file
 	 * @return boolean
@@ -420,7 +441,8 @@ class Upload
 	}
 
 	/**
-	 * Checks if only specific file extensions were set.
+	 * Checks if only specific 
+	 * file extensions were set.
 	 *
 	 * @return boolean
 	 */
@@ -434,7 +456,8 @@ class Upload
 	}
 
 	/**
-	 * Save the file/files with the random name on the server(optional for security uses).
+	 * Save the file/files with the 
+	 * encrypted names on the server.
 	 *
 	 * @param boolean | $encrypt
 	 * @return $this
@@ -463,7 +486,7 @@ class Upload
 	}
 
 	/**
-	 * Encrypt the file name.
+	 * Encrypts the file name.
 	 *
 	 * @param string | $fileName
 	 * @return string
@@ -478,7 +501,7 @@ class Upload
 	}
 
 	/**
-	 * Decrypt the file name.
+	 * Decrypts the file name.
 	 *
 	 * @param string | $fileName
 	 * @return string
@@ -491,7 +514,8 @@ class Upload
 	}
 
 	/**
-	 * Allow the user to specify which file types to encrypt.
+	 * Allows to specify 
+	 * which file types to encrypt.
 	 *
 	 * @param mixed | $types
 	 * @return void
@@ -511,7 +535,7 @@ class Upload
 	}
 
 	/**
-	 * This method create the directory if needed.
+	 * Creates the directory if not exists.
 	 * 
 	 * @param boolean | $create
 	 * @return void
@@ -530,7 +554,7 @@ class Upload
 	}
 
 	/**
-	 * This method retrieve the allowed extensions.
+	 * Retrieves the allowed extensions.
 	 *
 	 * @return array
 	 */
@@ -540,7 +564,7 @@ class Upload
 	}
 
 	/**
-	 * This method retrieve the maximum uploading size.
+	 * Retrieves the maximum uploading size.
 	 *
 	 * @return integer
 	 */
@@ -550,7 +574,7 @@ class Upload
 	}
 
 	/**
-	 * Check if extensions allowed
+	 * Checks if extensions allowed.
 	 *
 	 * @return boolean
 	 */
@@ -583,7 +607,7 @@ class Upload
 	}
 
 	/**
-	 * Check if the file size allowed.
+	 * Checks if the file size allowed.
 	 *
 	 * @param array | $file
 	 * @return boolean
@@ -628,7 +652,7 @@ class Upload
 	}
 
 	/**
-	 * Check if file validation fails.
+	 * Checks if file validation fails.
 	 *
 	 * @param array | $file
 	 * @return boolean
@@ -650,7 +674,7 @@ class Upload
 	}
 
 	/**
-	 * This method checks if the upload was unsuccessful.
+	 * Checks if the upload was unsuccessful.
 	 *
 	 * @return boolean
 	 */
@@ -666,7 +690,7 @@ class Upload
 	}
 
 	/**
-	 * This method checks if the upload was successful.
+	 * Checks if the upload was successful.
 	 *
 	 * @return boolean
 	 */
@@ -682,7 +706,8 @@ class Upload
 	}
 
 	/**
-	 * This method get the errors array to give some feedback to the user.
+	 * Retrieves the errors array 
+	 * to give some feedback to the user.
 	 *
 	 * @return array
 	 */
@@ -719,7 +744,8 @@ class Upload
 	}
 
 	/**
-	 * This method get the errors array to give some feedback to the user.
+	 * Retrieves the errors array 
+	 * to give some feedback to the user.
 	 *
 	 * @return array
 	 */
@@ -751,7 +777,8 @@ class Upload
 	}
 
 	/**
-	 * This method displays the errors formated nicely with bootstraps.
+	 * Displays the errors 
+	 * nicely formated with bootstraps.
 	 *
 	 * @return void
 	 */
@@ -763,7 +790,8 @@ class Upload
 	}
 
 	/**
-	 * This method displays the errors formated nicely with bootstraps.
+	 * Displays the errors 
+	 * nicely formated with bootstraps.
 	 *
 	 * @return void
 	 */
@@ -776,7 +804,8 @@ class Upload
 
 
 	/**
-	 * Checks if an upload form has been submitted.
+	 * Checks if an upload 
+	 * form has been submitted.
 	 *
 	 * @return boolean
 	 */
@@ -789,6 +818,26 @@ class Upload
 		return true;
 	}
 
+	/**
+	 * A simple gererator of a random
+	 * key to use for encrypting.
+	 *
+	 * @return void
+	 */
+	public static function generateMeAKey()
+	{
+		$instance = new static;
+		$key = $instance->randomString();
+
+		echo hash('sha256', $key);
+	}
+
+	/**
+	 * Creates a random string.
+	 *
+	 * @param int | $length
+	 * @return string
+	 */
 	protected function randomString($length = 64)
 	{
 		$string = '';
@@ -805,20 +854,8 @@ class Upload
 	}
 
 	/**
-	 * A simple gererator of a random key to use for encrypting.
-	 *
-	 * @return void
-	 */
-	public static function generateMeAKey()
-	{
-		$instance = new static;
-		$key = $instance->randomString();
-
-		echo hash('sha256', $key);
-	}
-
-	/**
-	 * This method get the errors array to give some feedback to the developer.
+	 * Gets the errors array to give 
+	 * feedback to the developer.
 	 *
 	 * @return array
 	 */
