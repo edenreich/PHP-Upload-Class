@@ -18,4 +18,16 @@ class UploadServiceProvider extends ServiceProvider
 
         $this->app->singleton('upload', Upload::class);
     }
+
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->publishes([
+            __DIR__ . '../config/upload.php' => config_path('upload.php'),
+        ]);
+    }
 }

@@ -158,4 +158,14 @@ class UploadClassTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(2, $callsCount);
 	}
+
+	/** @test */
+	public function can_load_the_configuration_file_correctly()
+	{
+		$upload = new Upload('file');
+	
+		$config = $upload->loadConfig();
+
+		$this->assertArrayHasKey('encryption_key', $config);
+	}
 }

@@ -8,6 +8,8 @@ if(Upload::submitted()) {
   // give the constructor the name of the html input field
   $upload = new Upload('file');
 
+  $upload->loadConfig();
+
   $upload->setDirectory('images')->create(true);
 
   $upload->addRules([
@@ -18,7 +20,7 @@ if(Upload::submitted()) {
             'extensions' => 'Please upload only jpg, png or pdf'
           ]);
 
-  $upload->encryptFileNames(true)->only('png|png');
+  $upload->encryptFileNames(true)->only('jpg|png');
 
   $upload->start();
 

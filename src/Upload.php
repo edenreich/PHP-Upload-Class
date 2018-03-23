@@ -137,6 +137,13 @@ class Upload
 	protected $failureUploads = [];
 
 	/**
+	 * Stores the configurations.
+	 *
+	 * @var array
+	 */
+	protected $config = [];
+
+	/**
 	 * Debug informations
 	 *
 	 * @var array
@@ -147,11 +154,16 @@ class Upload
 	 * Setting all the attributes with file data and check if it's single or multiple upload.
 	 *
 	 * @param string | $input
+	 * @param array | $config
 	 * @return void
 	 */
 	public function __construct($input = null)
 	{
-		if (empty($input) || ! isset($_FILES[$input]) || empty($_FILES[$input]['name'][0])) {
+		if (empty($input)) {
+			return;
+		}
+
+		if (! isset($_FILES[$input]) || empty($_FILES[$input]['name'][0])) {
 			return;
 		}
 
@@ -164,6 +176,56 @@ class Upload
 		$this->fileSizes = $this->fileInput['size'];
 		$this->fileExtensions = $this->getFileExtensions();
 		$this->files = $this->sortFiles($this->fileInput);
+	}
+
+	/**
+	 * Loads a config file instead.
+	 *
+	 * @param string | $path
+	 * @return array
+	 */
+	public function loadConfig($path = '')
+	{
+		$path = rtrim($path, '/');
+
+		$this->config = require $path ?: __DIR__ . '/config/upload.php';
+
+		return $this->config;
+	}
+
+	/**
+	 * This method checks if its files or file.
+	 *
+	 * @param string | $input
+	 * @return boolean
+	 */
+	protected function isMultiple($input)
+	{
+		if (count($_FILES[$input]['name']) > 1) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the extentions of the files.
+	 *
+	 * @return array
+	 */
+	protected function getFileExtensions()
+	{
+		$extensions = [];
+
+		foreach ($this->fileNames as $filename)
+		{
+			$str = explode('.', $filename);
+			$str = end($str);
+			$extension = strtolower($str);
+			$extensions[] = $extension;
+		}
+
+		return $extensions;
 	}
 
 	/**
@@ -257,41 +319,6 @@ class Upload
 	}
 
 	/**
-	 * This method checks if its files or file.
-	 *
-	 * @param string | $input
-	 * @return boolean
-	 */
-	protected function isMultiple($input)
-	{
-		if (count($_FILES[$input]['name']) > 1) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get the extentions of the files.
-	 *
-	 * @return array
-	 */
-	protected function getFileExtensions()
-	{
-		$extensions = [];
-
-		foreach ($this->fileNames as $filename)
-		{
-			$str = explode('.', $filename);
-			$str = end($str);
-			$extension = strtolower($str);
-			$extensions[] = $extension;
-		}
-
-		return $extensions;
-	}
-
-	/**
 	 * Set the path directory where you want to upload the files(if not specfied file/files
 	 * will be uploaded to the current directory).
 	 *
@@ -300,11 +327,7 @@ class Upload
 	 */
 	public function setDirectory($path)
 	{
-		if (substr($path , -1) == '/') {
-			$this->directoryPath = $path;
-		} else {
-			$this->directoryPath = $path . '/';
-		}
+		$this->directoryPath = rtrim($path, '/') . '/';
 
 		return $this;
 	}
