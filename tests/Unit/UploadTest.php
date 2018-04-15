@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests;
+namespace Tests\Unit;
 
 use Reich\Upload;
-use Tests\Helpers\FileGenerator;
+use Tests\Unit\Helpers\FileGenerator;
 
-class UploadClassTest extends \PHPUnit_Framework_TestCase
+class UploadTest extends \PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
