@@ -89,8 +89,17 @@ return [
     'messages' => [
         'size' => 'Please upload files that are less than 2MB size',
         'extensions' => 'Please upload only jpg, png or pdf'
-    ]
+    ],
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Async
+    |--------------------------------------------------------------------------
+    |
+    | Here you can set async to true if you wish to speed up the upload time.
+    |
+    */
 
+    'async' => true
 ];

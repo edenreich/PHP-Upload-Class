@@ -28,6 +28,13 @@ class Upload
 	use Encrypter;
 
 	/**
+	 * Indicates if the upload should be async.
+	 *
+	 * @var bool
+	 */
+	protected $async;
+
+	/**
 	 * Stores the uploaded source input.
 	 *
 	 * @var array
@@ -207,6 +214,34 @@ class Upload
 	}
 
 	/**
+	 * Sets the directory path where you 
+	 * want to upload the files(if not specfied,
+	 * files will be uploaded to the current directory).
+	 *
+	 * @param string | $path
+	 * @return $this
+	 */
+	public function setDirectory($path)
+	{
+		$this->directoryPath = rtrim($path, '/') . '/';
+
+		return $this;
+	}
+
+	/**
+	 * Setter for async upload.
+	 *
+	 * @param bool | $flag
+	 * @return $this
+	 */
+	public function async($flag = true)
+	{
+		$this->async = $flag;
+
+		return $this;
+	}
+
+	/**
 	 * Get the extentions of the files.
 	 *
 	 * @return array
@@ -319,21 +354,6 @@ class Upload
 	}
 
 	/**
-	 * Sets the directory path where you 
-	 * want to upload the files(if not specfied,
-	 * files will be uploaded to the current directory).
-	 *
-	 * @param string | $path
-	 * @return $this
-	 */
-	public function setDirectory($path)
-	{
-		$this->directoryPath = rtrim($path, '/') . '/';
-
-		return $this;
-	}
-
-	/**
 	 * Starts the upload process.
 	 *
 	 * @return void
@@ -363,11 +383,11 @@ class Upload
 
 			if ($uploaded) {
 				$file['success'] = true;
-	    			$this->successfulUploads[] = $file;
-	    		} else {
-	    			$file['success'] = false;
+    			$this->successfulUploads[] = $file;
+    		} else {
+    			$file['success'] = false;
 				$this->failureUploads[] = $file;
-	    		}
+    		}
 		}
 	}
 
@@ -390,11 +410,32 @@ class Upload
 	 */
 	protected function uploadUsingHttp(&$file) 
 	{
+		if ($this->shouldBeAsync()) {
+			echo "Running async" . PHP_EOL;
+			// @todo run multiple curl request to upload each file parallel. 
+		}
+
 		if ($this->shouldBeEncrypted($file)) {
-    			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['encrypted_name']);
-    		} else {
-    			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['name']);
-    		}
+			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['encrypted_name']);
+		} else {
+			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['name']);
+		}
+	}
+
+	/**
+	 * Checks if the upload should be async.
+	 *
+	 * @return bool
+	 */
+	protected function shouldBeAsync()
+	{
+		if (! empty($this->async)) {
+			return $this->async;
+		}
+
+		if (! empty($this->config)) {
+			return $this->config['async'];
+		}
 	}
 
 	/**

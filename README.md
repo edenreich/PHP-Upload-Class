@@ -33,10 +33,6 @@ with composer just run:
 composer require reich/upload
 ```
 
-or
-
-You can also download src/Upload.php and simply use it. 
-
 ## As a Package for Laravel
 This class is fully integrated into laravel framework using Laravel Auto-Discovery.
 If you don't use v5.5+ you may import the necessary files path in your /config/app.php file manually:
@@ -55,11 +51,12 @@ If you don't use v5.5+ you may import the necessary files path in your /config/a
   ...
 ```
 
-## Usage
+## Notes:
+1) Run Reich\Upload::generateMeAKey(); helper and copy the generated key into your config file(optional).
+2) Please open the example /demo/index.php file I created to follow and get a better understanding
+3) Most of the configurations can also be set using the config file(saves some repeated code), in order for this to happen you need to call loadConfig() method.
 
-##### 1) Copy the class that located in the src directory into your project or install it via composer and use it.
-##### 2) Generate an encryption key contains 32 characters or use Reich\Upload::generateMeAKey(); helper.
-##### 3) Please open the example /demo/index.php file I created to follow and get a better understanding
+## Usage
 
 Make sure the form is submitted:
 ```php
