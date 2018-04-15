@@ -66,13 +66,10 @@ if(Upload::submitted())
 }
 ```
 
-
 Make an instance of the class
 ```php
 $upload = new Upload(YOUR-HTML-INPUT-NAME); 
 ```
-
-
 
 Set the directory where you want to upload the files, by default it will upload to your main directroy
 ```php
@@ -83,8 +80,6 @@ You may also specify that you want to create this directory if it's not exists
 ```php
 $upload->setDirectory('img/')->create(true); 
 ```
-
-
 
 You can set the rules you want for your upload using the following syntax:
 ```php
@@ -101,8 +96,6 @@ $upload->addRules([
 ]);
 ```
 
-
-
 Set this only if you want to have a encrypt file names(optional for security):
 ```php
 $upload->encryptFileNames(true);
@@ -117,7 +110,10 @@ Or also the following syntax:
 $upload->encryptFileNames(true)->only('jpg|png|txt'); // only jpg, png and txt files will be encrypted
 ```
 
-
+At your own risk, you may also specify that you wish the downloads to be proccessed async.
+```php
+$upload->async(true);
+``` 
 
 After all is set just run the following command
 ```php
