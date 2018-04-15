@@ -7,7 +7,9 @@ use stdClass;
 use ReflectionFunction;
 
 // Traits
+use Reich\Traits\Request;
 use Reich\Traits\Encrypter;
+use Reich\Traits\AsyncOperations;
 
 // Exceptions
 use InvalidArgumentException;
@@ -25,14 +27,7 @@ use Reich\Exceptions\PermissionDeniedException;
 
 class Upload
 {
-	use Encrypter;
-
-	/**
-	 * Indicates if the upload should be async.
-	 *
-	 * @var bool
-	 */
-	protected $async;
+	use Encrypter, Request, AsyncOperations;
 
 	/**
 	 * Stores the uploaded source input.
@@ -229,19 +224,6 @@ class Upload
 	}
 
 	/**
-	 * Setter for async upload.
-	 *
-	 * @param bool | $flag
-	 * @return $this
-	 */
-	public function async($flag = true)
-	{
-		$this->async = $flag;
-
-		return $this;
-	}
-
-	/**
 	 * Get the extentions of the files.
 	 *
 	 * @return array
@@ -371,9 +353,8 @@ class Upload
 		foreach ($this->files as $key => &$file) {
 			if ($this->fileIsNotValid($file)) {
 				$file['success'] = false;
-	    			continue;
-	    		}
-
+	    		continue;
+	    	}
 
 			if (! empty($this->config) && $this->config['protocols']['default'] == 'ftp') {
 				$uploaded = $this->uploadUsingFtp($file);
@@ -389,6 +370,8 @@ class Upload
 				$this->failureUploads[] = $file;
     		}
 		}
+
+		$this->postAsyncHandlers();
 	}
 
 	/**
@@ -410,31 +393,15 @@ class Upload
 	 */
 	protected function uploadUsingHttp(&$file) 
 	{
-		if ($this->shouldBeAsync()) {
-			echo "Running async" . PHP_EOL;
-			// @todo run multiple curl request to upload each file parallel. 
+		if ($this->shouldBeAsync() && ! $this->header('User-Agent') == 'Curl') {
+			$this->addPostAsyncHandler($file);
+			return true;
 		}
 
 		if ($this->shouldBeEncrypted($file)) {
 			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['encrypted_name']);
 		} else {
 			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['name']);
-		}
-	}
-
-	/**
-	 * Checks if the upload should be async.
-	 *
-	 * @return bool
-	 */
-	protected function shouldBeAsync()
-	{
-		if (! empty($this->async)) {
-			return $this->async;
-		}
-
-		if (! empty($this->config)) {
-			return $this->config['async'];
 		}
 	}
 
