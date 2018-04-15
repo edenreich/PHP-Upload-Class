@@ -162,6 +162,7 @@ class UploadTest extends \PHPUnit_Framework_TestCase
 	/** @test */
 	public function can_load_the_configuration_file_correctly()
 	{
+		$_FILES = $this->fileGenerator->multiple('file');
 		$upload = new Upload('file');
 	
 		$config = $upload->loadConfig();

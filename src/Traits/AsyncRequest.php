@@ -36,7 +36,7 @@ trait AsyncRequest
 	 *
 	 * @return bool
 	 */
-	protected function shouldBeAsync()
+	public function shouldBeAsync()
 	{
 		if (! empty($this->async)) {
 			return $this->async;
@@ -52,7 +52,7 @@ trait AsyncRequest
 	 *
 	 * @return void
 	 */
-	protected function addPostAsyncHandler(&$file)
+	public function addPostAsyncHandler(&$file)
 	{
 		if (is_null($this->asyncMultiHandler)) {
 			$this->asyncMultiHandler = curl_multi_init();
@@ -82,7 +82,7 @@ trait AsyncRequest
 	 *
 	 * @return void
 	 */
-	protected function postAsyncHandlers()
+	public function postAsyncHandlers()
 	{
 		$running = null;
 		

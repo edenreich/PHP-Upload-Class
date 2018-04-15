@@ -6,10 +6,11 @@ use Closure;
 use stdClass;
 use ReflectionFunction;
 
+// Classes
+use Reich\Classes\Request;
+
 // Traits
-use Reich\Traits\Request;
 use Reich\Traits\Encrypter;
-use Reich\Traits\AsyncRequest;
 
 // Exceptions
 use InvalidArgumentException;
@@ -27,7 +28,14 @@ use Reich\Exceptions\PermissionDeniedException;
 
 class Upload
 {
-	use Encrypter, Request, AsyncRequest;
+	use Encrypter;
+
+	/**
+	 * Stores the request object.
+	 *
+	 * @return \Reich\Classes\Request
+	 */
+	protected $request;
 
 	/**
 	 * Stores the uploaded source input.
@@ -167,6 +175,7 @@ class Upload
 			return;
 		}
 
+		$this->request = new Request;
 		$this->fileInput = $_FILES[$input];
 		$this->isMultiple = $this->isMultiple($input);
 		$this->fileNames = $this->fileInput['name'];
@@ -176,6 +185,19 @@ class Upload
 		$this->fileSizes = $this->fileInput['size'];
 		$this->fileExtensions = $this->getFileExtensions();
 		$this->files = $this->sortFiles($this->fileInput);
+	}
+
+	/**
+	 * Setter for async upload.
+	 *
+	 * @param bool | $flag
+	 * @return $this
+	 */
+	public function async($flag = true)
+	{
+		$this->request->async($flag);
+
+		return $this;
 	}
 
 	/**
@@ -189,6 +211,7 @@ class Upload
 		$path = rtrim($path, '/');
 
 		$this->config = require $path ?: __DIR__ . '/config/upload.php';
+		$this->request->setConfig($this->config);
 
 		return $this->config;
 	}
@@ -371,7 +394,7 @@ class Upload
     		}
 		}
 
-		$this->postAsyncHandlers();
+		//$this->request->postAsyncHandlers();
 	}
 
 	/**
@@ -393,7 +416,7 @@ class Upload
 	 */
 	protected function uploadUsingHttp(&$file) 
 	{
-		if ($this->shouldBeAsync() && ! $this->header('User-Agent') == 'Curl') {
+		if ($this->request->shouldBeAsync() && ! $this->request->header('User-Agent') == 'Curl') {
 			$this->addPostAsyncHandler($file);
 			return true;
 		}
