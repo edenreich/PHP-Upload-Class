@@ -2,7 +2,7 @@
 
 namespace Reich\Traits;
 
-trait AsyncOperations
+trait AsyncRequest
 {
 	/**
 	 * Indicates if the upload should be async.
@@ -74,7 +74,7 @@ trait AsyncOperations
 
 	    curl_setopt_array($curl , $options);
 
-		curl_multi_add_handle($this->asyncMultiHandler,$curl);
+		curl_multi_add_handle($this->asyncMultiHandler, $curl);
 	}
 
 	/**

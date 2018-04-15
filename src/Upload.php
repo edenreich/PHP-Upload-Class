@@ -9,7 +9,7 @@ use ReflectionFunction;
 // Traits
 use Reich\Traits\Request;
 use Reich\Traits\Encrypter;
-use Reich\Traits\AsyncOperations;
+use Reich\Traits\AsyncRequest;
 
 // Exceptions
 use InvalidArgumentException;
@@ -27,7 +27,7 @@ use Reich\Exceptions\PermissionDeniedException;
 
 class Upload
 {
-	use Encrypter, Request, AsyncOperations;
+	use Encrypter, Request, AsyncRequest;
 
 	/**
 	 * Stores the uploaded source input.
