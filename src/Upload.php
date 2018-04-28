@@ -38,6 +38,13 @@ class Upload
 	protected $request;
 
 	/**
+	 * Stores the input name.
+	 *
+	 * @var string
+	 */
+	protected $inputName;
+
+	/**
 	 * Stores the uploaded source input.
 	 *
 	 * @var array
@@ -171,6 +178,8 @@ class Upload
 			return;
 		}
 
+		$this->inputName = $input;
+
 		if (! isset($_FILES[$input]) || empty($_FILES[$input]['name'][0])) {
 			return;
 		}
@@ -224,7 +233,7 @@ class Upload
 	 */
 	protected function isMultiple($input)
 	{
-		if (count($_FILES[$input]['name']) > 1) {
+		if (is_array($_FILES[$input]['name']) && count($_FILES[$input]['name']) > 1) {
 			return true;
 		}
 
@@ -255,8 +264,7 @@ class Upload
 	{
 		$extensions = [];
 
-		foreach ($this->fileNames as $filename)
-		{
+		foreach ($this->fileNames as $filename) {
 			$str = explode('.', $filename);
 			$str = end($str);
 			$extension = strtolower($str);
@@ -373,13 +381,56 @@ class Upload
 			throw new FolderNotExistException;
 		}
 
+		if (! empty($this->config) && $this->config['protocols']['default'] == 'ftp') {
+			$this->upload(true);
+		}
+
+		// This block will be skipped if User-Agent is Curl.
+		if ($this->request->shouldBeAsync() && $this->request->header('User-Agent') != 'Curl') {
+			$this->uploadAsync();
+		} else {
+			$this->upload();
+		}
+	}
+
+	/**
+	 * Uploads the file asyncrounsly.
+	 *
+	 * @return bool
+	 */
+	protected function uploadAsync()
+	{
 		foreach ($this->files as $key => &$file) {
 			if ($this->fileIsNotValid($file)) {
 				$file['success'] = false;
 	    		continue;
 	    	}
 
-			if (! empty($this->config) && $this->config['protocols']['default'] == 'ftp') {
+	    	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+
+	    	// Registers each file for a separate request.
+			$this->request->register($url, $file);
+		}
+	
+		// Executes all request asyncrously.
+		$responses = $this->request->executeAll();
+	}
+
+	/**
+	 * Process the files or file and upload them.
+	 *
+	 * @param bool | $ftp
+	 * @return bool
+	 */
+	protected function upload($ftp = false)
+	{
+		foreach ($this->files as $key => &$file) {
+			if ($this->fileIsNotValid($file)) {
+				$file['success'] = false;
+	    		continue;
+	    	}
+
+			if ($ftp === true) {
 				$uploaded = $this->uploadUsingFtp($file);
 			} else {
 				$uploaded = $this->uploadUsingHttp($file);
@@ -387,14 +438,12 @@ class Upload
 
 			if ($uploaded) {
 				$file['success'] = true;
-    			$this->successfulUploads[] = $file;
-    		} else {
-    			$file['success'] = false;
+				$this->successfulUploads[] = $file;
+			} else {
+				$file['success'] = false;
 				$this->failureUploads[] = $file;
-    		}
+			}
 		}
-
-		//$this->request->postAsyncHandlers();
 	}
 
 	/**
@@ -416,11 +465,6 @@ class Upload
 	 */
 	protected function uploadUsingHttp(&$file) 
 	{
-		if ($this->request->shouldBeAsync() && ! $this->request->header('User-Agent') == 'Curl') {
-			$this->addPostAsyncHandler($file);
-			return true;
-		}
-
 		if ($this->shouldBeEncrypted($file)) {
 			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['encrypted_name']);
 		} else {

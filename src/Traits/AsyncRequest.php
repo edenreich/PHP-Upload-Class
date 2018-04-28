@@ -12,11 +12,18 @@ trait AsyncRequest
 	protected $async;
 
 	/**
+	 * Stores the curl handlers.
+	 *
+	 * @var array
+	 */
+	protected $curlHandlers = [];
+
+	/**
 	 * Stores the curl multi handler.
 	 *
-	 * @var bool
+	 * @var resource
 	 */
-	protected $asyncMultiHandler = null;
+	protected $curlMultiHandle = null;
 
 	/**
 	 * Setter for async upload.
@@ -48,57 +55,69 @@ trait AsyncRequest
 	}
 
 	/**
-	 * Adds asyncrouns post handler.
+	 * Registers asyncrouns post handler.
 	 *
+	 * @param string | $url
+	 * @param array | $data
 	 * @return void
 	 */
-	public function addPostAsyncHandler(&$file)
+	public function register($url , $data = []) 
 	{
-		if (is_null($this->asyncMultiHandler)) {
-			$this->asyncMultiHandler = curl_multi_init();
+		if (empty($data)) {
+			return;	
 		}
 
-		$url = 'http://'. $_SERVER['HTTP_HOST']. $_SERVER['REQUEST_URI'];
+		if (is_null($this->curlMultiHandle)) {
+			$this->curlMultiHandle = curl_multi_init();
+		}
 
-		$curl = curl_init($url);
-	    
+	    $curlHandler = curl_init($url);
+
+	    $file = [
+		    'file[0]' => new \CurlFile($data['tmp_name'], $data['type'], $data['name'])
+		];
+
 	    $options = [
-	        CURLOPT_HTTPHEADER => [ 'User-Agent: Curl' ],
-	        CURLOPT_SSL_VERIFYPEER => false,
-	        CURLOPT_ENCODING => "gzip",
+	        CURLOPT_ENCODING => 'gzip',
 	        CURLOPT_FOLLOWLOCATION => true,
 	        CURLOPT_RETURNTRANSFER => true,
 	        CURLOPT_POST => 1,
-	        CURLOPT_POSTFIELDS => $file
+	        CURLOPT_POSTFIELDS => $file,
+	        CURLOPT_USERAGENT => 'Curl'
 	    ];
 
-	    curl_setopt_array($curl , $options);
+	    curl_setopt_array($curlHandler, $options);
 
-		curl_multi_add_handle($this->asyncMultiHandler, $curl);
+	    $this->curlHandlers[] = $curlHandler;
+	    curl_multi_add_handle($this->curlMultiHandle, $curlHandler);
 	}
 
 	/**
 	 * Executes the post request handlers.
 	 *
-	 * @return void
+	 * @return string
 	 */
-	public function postAsyncHandlers()
+	public function executeAll() 
 	{
-		$running = null;
-		
-		do {
-		    $mrc = curl_multi_exec($this->asyncMultiHandler, $running);
-		    //file_put_contents('log.txt', $running);
-		} while ($running > 0);
+	    $responses = [];
 
-		while ($running && $mrc == CURLM_OK) {
-		    if (curl_multi_select($this->asyncMultiHandler) != -1) {
-		        do {
-		            $mrc = curl_multi_exec($this->asyncMultiHandler, $running);
-		        } while ($running > 0);
+	    $running = null;
+	    
+	    do {
+	    	if (curl_multi_select($this->curlMultiHandle) == -1) {
+		        usleep(100);
 		    }
-		}
 
-		curl_multi_close($this->asyncMultiHandler);
+	        curl_multi_exec($this->curlMultiHandle, $running);
+	    } while ($running > 0);
+
+	    foreach ($this->curlHandlers as $id => $handle) {
+	        $responses[$id] = curl_multi_getcontent($handle);
+	        curl_multi_remove_handle($this->curlMultiHandle, $handle);
+	    }
+	    
+	    curl_multi_close($this->curlMultiHandle);
+
+	    return $responses;
 	}
 }
