@@ -1,4 +1,0 @@
-<?php
-
-
-echo "Third Response";
