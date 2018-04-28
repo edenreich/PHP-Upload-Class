@@ -38,13 +38,6 @@ class Upload
 	protected $request;
 
 	/**
-	 * Stores the input name.
-	 *
-	 * @var string
-	 */
-	protected $inputName;
-
-	/**
 	 * Stores the uploaded source input.
 	 *
 	 * @var array
@@ -177,8 +170,6 @@ class Upload
 		if (empty($input)) {
 			return;
 		}
-
-		$this->inputName = $input;
 
 		if (! isset($_FILES[$input]) || empty($_FILES[$input]['name'][0])) {
 			return;
