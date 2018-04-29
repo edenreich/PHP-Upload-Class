@@ -248,7 +248,7 @@ class Upload
 	 */
 	public function setDirectory($path)
 	{
-		$this->directoryPath = trim($path, '/');
+		$this->directoryPath = rtrim($path, '/');
 
 		return $this;
 	}
@@ -549,8 +549,8 @@ class Upload
 			return;
 		}
 
-		if (! file_exists('/'.$this->directoryPath)) {
-			if (! @mkdir('/'.$this->directoryPath, 0777, true)) {
+		if (! file_exists($this->directoryPath)) {
+			if (! @mkdir($this->directoryPath, 0777, true)) {
 				throw new PermissionDeniedException;
 			}
 		}
