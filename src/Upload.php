@@ -460,7 +460,8 @@ class Upload
 		$config = $this->config['protocols']['ftp'];
 
 		if (is_null($this->FTPConnection)) {
-			$this->FTPConnection = ftp_connect($config['host'], $config['port']);
+			$this->FTPConnection = ftp_connect($config['host'], $config['port']) or die('Could not connect to FTP server!');
+
 			ftp_login($this->FTPConnection, $config['username'], $config['password']);
 			ftp_pasv($this->FTPConnection, true);
 		}
