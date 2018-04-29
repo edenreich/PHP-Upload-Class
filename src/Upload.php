@@ -248,7 +248,7 @@ class Upload
 	 */
 	public function setDirectory($path)
 	{
-		$this->directoryPath = rtrim($path, '/') . '/';
+		$this->directoryPath = trim($path, '/');
 
 		return $this;
 	}
@@ -478,10 +478,10 @@ class Upload
 	protected function uploadUsingHttp(&$file) 
 	{
 		if ($this->shouldBeEncrypted($file)) {
-			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['encrypted_name']);
-		} else {
-			return move_uploaded_file($file['tmp_name'], $this->directoryPath . $file['name']);
+			return move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['encrypted_name']);
 		}
+
+		return move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['name']);
 	}
 
 	/**
