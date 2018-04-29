@@ -14,16 +14,16 @@ return [
 
     'protocols' => [
 
-        'default' => 'http',
+        'default' => 'ftp',
 
         'http' => [
             'port' => '80'
         ],
 
         'ftp' => [
-            'host'     => '',
-            'username' => '',
-            'password' => '',
+            'host'     => '127.0.0.1',
+            'username' => 'test',
+            'password' => 'secret',
             'port' => '21'
         ]
 

@@ -144,6 +144,13 @@ class Upload
 	protected $failureUploads = [];
 
 	/**
+	 * Stores the FTP connection.
+	 *
+	 * @var resource
+	 */
+	protected $FTPConnection = null;
+
+	/**
 	 * Stores the configurations.
 	 *
 	 * @var array
@@ -435,6 +442,11 @@ class Upload
 				$this->failureUploads[] = $file;
 			}
 		}
+
+		// Once all files were uploaded, close the connection.
+		if ($ftp) {
+			ftp_close($this->FTPConnection);
+		}
 	}
 
 	/**
@@ -445,7 +457,15 @@ class Upload
 	 */
 	protected function uploadUsingFtp(&$file) 
 	{
-		// @todo upload the file using ftp protocol
+		$config = $this->config['protocols']['ftp'];
+
+		if (is_null($this->FTPConnection)) {
+			$this->FTPConnection = ftp_connect($config['host'], $config['port']);
+			ftp_login($this->FTPConnection, $config['username'], $config['password']);
+			ftp_pasv($this->FTPConnection, true);
+		}
+
+		return ftp_put($this->FTPConnection, $file['name'], $file['tmp_name'], FTP_BINARY);
 	}
 
 	/**
