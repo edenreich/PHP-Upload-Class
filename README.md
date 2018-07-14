@@ -1,4 +1,4 @@
-<p align="center"><img src="<img src="https://drive.google.com/uc?export=view&id=18m6DyseiibtbYC6paNUjLVS3rRBWrsW6" width="100" height="100">"></p>
+<p align="center"><img src="https://drive.google.com/uc?export=view&id=18m6DyseiibtbYC6paNUjLVS3rRBWrsW6"></p>
 
 ## Upload.php
 <br/>
