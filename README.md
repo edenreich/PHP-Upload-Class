@@ -1,4 +1,4 @@
-<p align="center"><img src="https://s11.postimg.cc/6rrm3zatv/elephantsmall.jpg"></p>
+<p align="center"><img src="https://drive.google.com/uc?export=view&id=18m6DyseiibtbYC6paNUjLVS3rRBWrsW6"></p>
 
 # Upload.php
 <p>
