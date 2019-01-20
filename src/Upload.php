@@ -45,8 +45,9 @@ class Upload
     {
         $input = new Input($name);
         $validator = new Validator($input, $rules);
+        $request = new Request;
 
-        return new UploadClass($input, $validator);
+        return new UploadClass($input, $validator, $request);
     }
 
     public static function __callStatic($method, $args)
