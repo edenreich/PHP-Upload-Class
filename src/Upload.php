@@ -50,6 +50,13 @@ class Upload
         return new UploadClass($input, $validator, $request);
     }
 
+    /**
+     * Pass static calls dynamically to \Reich\Classes\Upload
+     * 
+     * @param string  $method
+     * @param array  $args
+     * @return mixed
+     */
     public static function __callStatic($method, $args)
     {
         return UploadClass::$method(...$args);
