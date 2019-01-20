@@ -12,7 +12,7 @@ class UploadServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(Upload::class);
 
@@ -24,7 +24,7 @@ class UploadServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__ . '../config/upload.php' => config_path('upload.php'),
