@@ -2,6 +2,7 @@
 
 namespace Reich\Traits;
 
+use Closure;
 use ReflectionFunction;
 
 trait EventListeners

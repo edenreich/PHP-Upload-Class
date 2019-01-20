@@ -2,7 +2,6 @@
 
 namespace Reich\Classes;
 
-use Closure;
 use stdClass;
 
 // Classes
