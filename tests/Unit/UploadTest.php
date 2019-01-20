@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
-use Reich\Upload;
+use Reich\Classes\Upload;
+
+use Tests\TestCase;
 use Tests\Unit\Helpers\FileGenerator;
 
-class UploadTest extends \PHPUnit_Framework_TestCase
+class UploadTest extends TestCase
 {
 	public function setUp()
 	{

@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
+use Tests\TestCase;
+
 use Reich\Classes\Input;
 use Tests\Unit\Helpers\FileGenerator;
 
-class InputTest extends \PHPUnit_Framework_TestCase
+class InputTest extends TestCase
 {
 	public function setUp()
 	{
@@ -32,5 +34,19 @@ class InputTest extends \PHPUnit_Framework_TestCase
 		$input = new Input('file');
 
 		$this->assertTrue($input->isMultiple());
+	}
+
+	/** @test */
+	public function it_checks_if_the_input_is_empty()
+	{
+		$input = new Input('file');
+
+		$this->assertTrue($input->isEmpty());
+
+		$_FILES = $this->fileGenerator->single('file');
+
+		$input = new Input('file');
+
+		$this->assertFalse($input->isEmpty());
 	}
 }

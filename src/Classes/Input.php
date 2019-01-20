@@ -11,6 +11,13 @@ class Input implements InputInterface
      * 
      * @var string
      */
+    private $name;
+
+    /**
+     * Stores the input.
+     * 
+     * @var array
+     */
     private $input;
 
     /**
@@ -19,10 +26,11 @@ class Input implements InputInterface
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->input = $_FILES[$name] ?? null;
     }
 
     /**
-     * Indicates if it multiple files.
+     * Indicate if it multiple files.
      * 
      * @return bool
      */
@@ -33,5 +41,19 @@ class Input implements InputInterface
 		}
 
 		return false;
+    }
+
+    /**
+     * Check if the input is empty.
+     * 
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        if ($this->input === null) {
+			return true;
+		}
+        
+        return false;
     }
 }
