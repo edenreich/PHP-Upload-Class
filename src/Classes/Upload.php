@@ -35,13 +35,6 @@ class Upload implements UploadInterface
 	use Encrypter, EventListeners;
 
 	/**
-	 * Stores the request object.
-	 *
-	 * @return \Reich\Classes\Request
-	 */
-	protected $request;
-
-	/**
 	 * Stores the uploaded source input.
 	 *
 	 * @var array
@@ -183,30 +176,41 @@ class Upload implements UploadInterface
 	private $validator;
 
 	/**
+	 * Stores the request.
+	 *
+	 * @return \Reich\Classes\Request
+	 */
+	protected $request;
+
+	/**
 	 * - Sets all of the attributes with file data.
 	 * - Checks if it's single or multiple upload.
 	 * - Sorts the files.
 	 *
-	 * @param string | $input
-	 * @return void
+	 * @param \Reich\Classes\Input  $input
+	 * @param \Reich\Classes\Validator  $validator
+	 * @param \Reich\Classes\Request  $request
 	 */
-	public function __construct(Input $input, Validator $validator)
+	public function __construct(Input $input, Validator $validator, Request $request)
 	{
 		if ($input->isEmpty()) {
 			return;
 		}
 
+		$this->input = $input;
 		$this->validator = $validator;
-		$this->request = new Request;
-		$this->fileInput = $_FILES[$input];
-		$this->isMultiple = $this->isMultiple($input);
-		$this->fileNames = $this->fileInput['name'];
-		$this->fileTypes = $this->fileInput['type'];
-		$this->fileTempNames = $this->fileInput['tmp_name'];
-		$this->fileErrors = $this->fileInput['error'];
-		$this->fileSizes = $this->fileInput['size'];
-		$this->fileExtensions = $this->getFileExtensions();
-		$this->files = $this->sortFiles($this->fileInput);
+		$this->request = $request;
+
+
+		// $this->fileInput = $_FILES[$input];
+		// $this->isMultiple = $this->isMultiple($input);
+		// $this->fileNames = $this->fileInput['name'];
+		// $this->fileTypes = $this->fileInput['type'];
+		// $this->fileTempNames = $this->fileInput['tmp_name'];
+		// $this->fileErrors = $this->fileInput['error'];
+		// $this->fileSizes = $this->fileInput['size'];
+		// $this->fileExtensions = $this->getFileExtensions();
+		// $this->files = $this->sortFiles($this->fileInput);
 	}
 
 	/**

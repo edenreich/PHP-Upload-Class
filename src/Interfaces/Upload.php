@@ -64,24 +64,6 @@ interface Upload
 	public function start();
 
 	/**
-	 * Listener for success.
-	 *
-	 * @param Closure | $callback
-	 * @param bool | $asObject
-	 * @return void
-	 */
-	public function success(Closure $callback, $asObject = true): void;
-
-	/**
-	 * Listener for failure.
-	 *
-	 * @param Closure $callback
-	 * @param bool | $asObject
-	 * @return void
-	 */
-	public function error(Closure $callback, $asObject = true): void;
-
-	/**
 	 * Creates the directory if not exists.
 	 * 
 	 * @param bool | $create

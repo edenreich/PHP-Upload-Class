@@ -4,9 +4,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Reich\Upload;
 
-if(Upload::submitted()) {
+if (Upload::submitted()) {
   // give the constructor the name of the html input field
-  $upload = new Upload('file');
+  $upload = Upload::picture('file');
 
   $upload->loadConfig();
 
