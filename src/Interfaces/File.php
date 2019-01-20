@@ -12,6 +12,20 @@ interface File
     public function getName(): string;
 
     /**
+     * Retrieve the encrypted name of the file.
+     * 
+     * @return string
+     */
+    public function getEncryptedName(): string;
+
+    /**
+     * Indicates if the files is encrypted.
+     * 
+     * @return bool
+     */
+    public function isEncrypted(): bool;
+
+    /**
      * Retrieve the file type.
      * 
      * @return string
@@ -38,4 +52,19 @@ interface File
      * @return string
      */
     public function getError(): int;
+
+    /**
+     * Retrieve the file error message.
+     * 
+     * @return string
+     */
+    public function getErrorMessage(): string;
+
+    /** 
+     * Indicates if the file 
+     * was uploaded successfully.
+     * 
+     * @return bool
+     */
+    public function success(): bool;
 }
