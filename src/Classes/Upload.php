@@ -4,7 +4,6 @@ namespace Reich\Classes;
 
 use Closure;
 use stdClass;
-use ReflectionFunction;
 
 // Classes
 use Reich\Classes\Request;

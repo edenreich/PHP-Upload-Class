@@ -2,6 +2,8 @@
 
 namespace Reich\Traits;
 
+use ReflectionFunction;
+
 trait EventListeners
 {
     /**
