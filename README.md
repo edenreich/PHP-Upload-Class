@@ -179,3 +179,16 @@ else if($upload->successfulFilesHas())
 ```php
 print_r($upload->debug()); // There are some errors only you should look at while setting this up
 ```
+
+## Contributing
+
+If you feel like contributing to this project, your pull requests are more than welcome ;)
+
+## Setup for Further Development
+
+1) Run ```docker-compose up -d```
+2) Open [http://localhost](http://localhost)
+
+## Testing
+
+run ```docker-compose exec php ./vendor/bin/phpunit```
