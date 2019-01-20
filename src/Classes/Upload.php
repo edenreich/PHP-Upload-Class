@@ -42,13 +42,6 @@ class Upload implements UploadInterface
 	protected $fileInput = [];
 
 	/**
-	 * Stores all files.
-	 *
-	 * @var array
-	 */
-	protected $files = [];
-
-	/**
 	 * Stores all the file names.
 	 *
 	 * @var array
@@ -178,14 +171,23 @@ class Upload implements UploadInterface
 	/**
 	 * Stores the request.
 	 *
-	 * @return \Reich\Classes\Request
+	 * @var \Reich\Classes\Request
 	 */
 	protected $request;
 
 	/**
-	 * - Sets all of the attributes with file data.
-	 * - Checks if it's single or multiple upload.
-	 * - Sorts the files.
+	 * Stores the files.
+	 * 
+	 * @var array
+	 */
+	protected $files;
+
+	/**
+	 * Initialize:
+	 *  - Input
+	 *  - Validator
+	 *  - Request
+	 *  - Files
 	 *
 	 * @param \Reich\Classes\Input  $input
 	 * @param \Reich\Classes\Validator  $validator
@@ -200,6 +202,7 @@ class Upload implements UploadInterface
 		$this->input = $input;
 		$this->validator = $validator;
 		$this->request = $request;
+		$this->files = $input->getFiles();
 
 
 		// $this->fileInput = $_FILES[$input];
@@ -210,7 +213,6 @@ class Upload implements UploadInterface
 		// $this->fileErrors = $this->fileInput['error'];
 		// $this->fileSizes = $this->fileInput['size'];
 		// $this->fileExtensions = $this->getFileExtensions();
-		// $this->files = $this->sortFiles($this->fileInput);
 	}
 
 	/**
@@ -287,37 +289,6 @@ class Upload implements UploadInterface
 		}
 
 		return $extensions;
-	}
-
-	/**
-	 * Organizes the files 
-	 * in a an array of keys for each file.
-	 *
-	 * @param array | $files
-	 * @return array
-	 */
-	public function sortFiles(array $files): array
-	{
-		$sortedFiles = [];
-
-		foreach ($files as $property => $values) {
-			foreach ($values as $key => $value) {
-				$sortedFiles[$key] = [
-					'name' => $files['name'][$key],
-					'encrypted_name' => '',
-					'type' => $files['type'][$key],
-					'extension' => $this->fileExtensions[$key],
-					'tmp_name' => $files['tmp_name'][$key],
-					'error' => $files['error'][$key],
-					'size' => $files['size'][$key],
-					'encryption' => false,
-					'success' => false,
-					'errorMessage' => ''
-				];
-			}
-		}
-
-		return $sortedFiles;
 	}
 
 	/**

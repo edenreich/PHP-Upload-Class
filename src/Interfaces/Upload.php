@@ -31,15 +31,6 @@ interface Upload
 	public function setDirectory($path): Upload;
 
 	/**
-	 * Organizes the files 
-	 * in a an array of keys for each file.
-	 *
-	 * @param array | $files
-	 * @return array
-	 */
-	public function sortFiles(array $files): array;
-
-	/**
 	 * Allows to set rules 
 	 * for the upload process.
 	 *
