@@ -1,6 +1,6 @@
 <?php
 
-namespace Reich\Upload\Laravel;
+namespace Reich\Frameworks\Laravel;
 
 use Illuminate\Support\Facades\Facade;
 
