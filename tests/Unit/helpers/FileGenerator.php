@@ -7,45 +7,50 @@ class FileGenerator
 	/**
 	 * Generates a random file.
 	 *
+	 * @param string  $inputName
+	 * @param array  $overrides
 	 * @return array
 	 */
-	public function single($inputName) 
+	public function single(string $inputName, array $overrides = []): array
 	{
 		return [
-    		$inputName => [
-        		'name' => [$this->name()],
-        		'type' => [$this->mimeType()],
-        		'size' => [$this->size()],
-        		'tmp_name' => [$this->tempName()],
-        		'error' => [0]
-    		]
+    		$inputName => array_merge([
+        		'name' => [ $this->name() ],
+        		'type' => [ $this->mimeType() ],
+        		'size' => [ $this->size() ],
+        		'tmp_name' => [ $this->tempName() ],
+        		'error' => [ 0 ]
+			], $overrides)
     	];
 	}
 
 	/**
 	 * Generates random files.
-	 *
+	 * 
+	 * @param string  $inputName
+	 * @param array  $overrides
 	 * @return array
 	 */
-	public function multiple($inputName) 
+	public function multiple(string $inputName, array $overrides = []): array 
 	{
 		return [
-    		$inputName => [
-        		'name' => [$this->name(), $this->name()],
-        		'type' => [$this->mimeType(), $this->mimeType()],
-        		'size' => [$this->size(), $this->size()],
-        		'tmp_name' => [$this->tempName(), $this->tempName()],
-        		'error' => [0,0]
-    		]
+    		$inputName => array_merge([
+        		'name' => [ $this->name(), $this->name() ],
+        		'type' => [ $this->mimeType(), $this->mimeType() ],
+        		'size' => [ $this->size(), $this->size() ],
+        		'tmp_name' => [ $this->tempName(), $this->tempName() ],
+        		'error' => [ 0, 0 ]
+			], $overrides)
     	];
 	}
 
 	/**
 	 * Generates an invalid file.
 	 *
+	 * @param string  $inputName
 	 * @return array
 	 */
-	public function invalidFile($inputName)
+	public function invalidFile(string $inputName): array
 	{
 		return [
     		$inputName => [
@@ -63,7 +68,7 @@ class FileGenerator
 	 *
 	 * @return string
 	 */
-	protected function path()
+	protected function path(): string
 	{
 		$index = mt_rand(0, 2);
 		
@@ -77,7 +82,7 @@ class FileGenerator
 	 *
 	 * @return string
 	 */
-	protected function name() 
+	protected function name(): string
 	{
 		$index = mt_rand(0, 2);
 		
@@ -91,7 +96,7 @@ class FileGenerator
 	 *
 	 * @return string
 	 */
-	protected function mimeType() 
+	protected function mimeType(): string
 	{
 		$index = mt_rand(0, 3);
 		
@@ -103,9 +108,9 @@ class FileGenerator
 	/**
 	 * Generates a random file size.
 	 *
-	 * @return integer
+	 * @return int
 	 */
-	protected function size()
+	protected function size(): string
 	{
 		return mt_rand(10, 1000);
 	}
@@ -115,7 +120,7 @@ class FileGenerator
 	 *
 	 * @return string
 	 */
-	protected function tempName() 
+	protected function tempName(): string
 	{
 		$index = mt_rand(0, 5);
 
