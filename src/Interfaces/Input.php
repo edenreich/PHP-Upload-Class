@@ -17,4 +17,11 @@ interface Input
      * @return bool
      */
     public function isEmpty(): bool;
+
+    /**
+     * Retrieve the files.
+     * 
+     * @return array
+     */
+    public function getFiles(): array;
 }
