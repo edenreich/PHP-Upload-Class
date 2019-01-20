@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Reich\Classes\Upload;
+use Reich\Upload;
 
 use Tests\TestCase;
 use Tests\Unit\Helpers\FileGenerator;
@@ -25,7 +25,7 @@ class UploadTest extends TestCase
 	{
 		$_FILES = $this->fileGenerator->single('file');
 
-		$upload = new Upload('file');
+		$upload = Upload::file('file');
 
 		$results = $upload->sortFiles($_FILES['file']);
 
@@ -48,37 +48,6 @@ class UploadTest extends TestCase
 		$this->assertArrayHasKey('success', $results[0]);
 		$this->assertArrayHasKey('errorMessage', $results[0]);
 
-	}
-
-	/** @test */
-	public function can_add_rules()
-	{
-
-		$_FILES = $this->fileGenerator->single('file');
-
-		$upload = new Upload('file');
-
-		$upload->addRules([
-		        'size' => 2000,
-		        'extensions' => 'png|jpg|pdf'
-		]);
-
-		$extensions = $upload->getAllowedExtensions();
-		$maxSize = $upload->getMaxUploadingSize();
-
-		$this->assertEquals($extensions, ['png', 'jpg', 'pdf']);
-		$this->assertEquals($maxSize, 2000);
-
-		$upload->addRules([
-		        'size' => 2500,
-		        'extensions' => ['png', 'jpg', 'pdf']
-		]);
-
-		$extensions = $upload->getAllowedExtensions();
-		$maxSize = $upload->getMaxUploadingSize();
-
-		$this->assertEquals($extensions, ['png', 'jpg', 'pdf']);
-		$this->assertEquals($maxSize, 2500);
 	}
 
 	/** @test */
