@@ -48,11 +48,12 @@ class Upload
      */
     public static function file(string $name, array $rules = []): UploadClass
     {
+        $config = new Config;
         $input = new Input($name);
         $validator = new Validator($input, $rules);
         $request = new Request;
 
-        return new UploadClass($input, $validator, $request);
+        return new UploadClass($config, $input, $validator, $request);
     }
 
     /**

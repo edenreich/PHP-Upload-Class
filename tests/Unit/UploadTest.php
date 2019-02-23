@@ -21,41 +21,13 @@ class UploadTest extends TestCase
 	}
 
 	/** @test */
-	public function order_files_properly()
+	public function a_directory_is_being_created()
 	{
 		$_FILES = $this->fileGenerator->single('file');
 
 		$upload = Upload::file('file');
 
-		$results = $upload->sortFiles($_FILES['file']);
-
-		$this->assertCount(1, $results);
-		$this->assertCount(10, $results[0]);
-		$this->assertArrayHasKey('encryption', $results[0]);
-		$this->assertArrayHasKey('success', $results[0]);
-		$this->assertArrayHasKey('errorMessage', $results[0]);
-
-		$_FILES = $this->fileGenerator->multiple('files');
-
-		$upload = new Upload('files');
-
-		$results = $upload->sortFiles($_FILES['files']);
-
-		$this->assertCount(2, $results);
-		$this->assertCount(10, $results[0]);
-		$this->assertCount(10, $results[1]);
-		$this->assertArrayHasKey('encryption', $results[0]);
-		$this->assertArrayHasKey('success', $results[0]);
-		$this->assertArrayHasKey('errorMessage', $results[0]);
-
-	}
-
-	/** @test */
-	public function a_directory_is_being_created()
-	{
-		$_FILES = $this->fileGenerator->single('file');
-
-		$upload = new Upload('file');
+		$upload->setDirectory('images')->create(true);
 
 		$dirPath = __DIR__ . '/tmp';
 
