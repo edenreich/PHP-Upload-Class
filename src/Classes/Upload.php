@@ -8,6 +8,7 @@ use stdClass;
 use Reich\Classes\Request;
 
 // Interfaces
+use Reich\Interfaces\Config;
 use Reich\Interfaces\Input;
 use Reich\Interfaces\Validator;
 use Reich\Interfaces\Upload as UploadInterface;
@@ -184,15 +185,17 @@ class Upload implements UploadInterface
 
 	/**
 	 * Initialize:
+	 * 	- Config
 	 *  - Input
 	 *  - Validator
 	 *  - Request
 	 *
+	 * @param \Reich\Classes\Config  $config
 	 * @param \Reich\Classes\Input  $input
 	 * @param \Reich\Classes\Validator  $validator
 	 * @param \Reich\Classes\Request  $request
 	 */
-	public function __construct(Input $input, Validator $validator, Request $request)
+	public function __construct(Config $config, Input $input, Validator $validator, Request $request)
 	{
 		if ($input->isEmpty()) {
 			return;

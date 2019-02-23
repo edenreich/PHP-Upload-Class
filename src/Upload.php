@@ -3,6 +3,7 @@
 namespace Reich;
 
 // Classes
+use Reich\Classes\Config;
 use Reich\Classes\Input;
 use Reich\Classes\Validator;
 use Reich\Classes\Request;
@@ -27,6 +28,7 @@ class Upload
      */
     public static function picture(string $name, array $rules = []): UploadClass
     {
+        $config = new Config;
         $input = new Input($name);
         $validator = new Validator($input, $rules);
         $request = new Request;
@@ -34,7 +36,7 @@ class Upload
         $validator->setRule(Rule::MimeTypes, [ MimeType::JPG, MimeType::PNG ]);
         $validator->setRule(Rule::Extensions, [ Extension::JPG, Extension::JPEG, Extension::PNG ]);
 
-        return new UploadClass($input, $validator, $request);
+        return new UploadClass($config, $input, $validator, $request);
     }
 
     /**
