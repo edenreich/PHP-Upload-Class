@@ -16,7 +16,7 @@ if (Upload::submitted()) {
     $upload->setDirectory('images')->create(true);
 
 	// Upload::picture() is already setting this by default, feel free to override this
-    // $validator->setRule(Rule::MimeTypes, [ MimeType::JPG, MimeType::PNG ]);
+    // $upload->validator()->setRule(Rule::MimeTypes, [ MimeType::JPG, MimeType::PNG ]);
 
     $upload->encryptFileNames(true)->only('png');
 
