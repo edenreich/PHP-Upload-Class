@@ -2,6 +2,8 @@
 
 namespace Reich\Interfaces;
 
+use Reich\Interfaces\Validator;
+
 interface Upload
 {
 	/**
@@ -31,21 +33,11 @@ interface Upload
 	public function create(?bool $create = null): void;
 
 	/**
-	 * Allows to set rules 
-	 * for the upload process.
-	 *
-	 * @param array | $rules
-	 * @return $this
+	 * Retrieve the validator.
+	 * 
+	 * @return \Reich\Interfaces\Validator
 	 */
-	public function addRules(array $rules): Upload;
-
-	/**
-	 * Allows the to set custom error messages.
-	 *
-	 * @param array | $errorMessages
-	 * @return void
-	 */
-	public function customErrorMessages(array $errorMessages): void;
+	public function validator(): Validator;
 
 	/**
 	 * Starts the upload process.
@@ -53,20 +45,6 @@ interface Upload
 	 * @return void
 	 */
 	public function start();
-
-	/**
-	 * Retrieves the allowed extensions.
-	 *
-	 * @return array
-	 */
-	public function getAllowedExtensions(): array;
-
-	/**
-	 * Retrieves the maximum uploading size.
-	 *
-	 * @return int
-	 */
-	public function getMaxUploadingSize(): int;
 
 	/**
 	 * Checks if the upload was unsuccessful.

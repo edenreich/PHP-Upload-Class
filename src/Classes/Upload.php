@@ -43,34 +43,6 @@ class Upload implements UploadInterface
 	protected $fileInput = [];
 
 	/**
-	 * Stores all the file names.
-	 *
-	 * @var array
-	 */
-	protected $fileNames = [];
-
-	/**
-	 * Stores all the file types.
-	 *
-	 * @var array
-	 */
-	protected $fileTypes = [];
-
-	/**
-	 * Stores all the file temporary names.
-	 *
-	 * @var array
-	 */
-	protected $fileTempNames = [];
-
-	/**
-	 * Stores all the file extensions.
-	 *
-	 * @var array
-	 */
-	protected $fileExtensions = [];
-
-	/**
 	 * Stores all the file errors.
 	 *
 	 * @var array
@@ -83,27 +55,6 @@ class Upload implements UploadInterface
 	 * @var array
 	 */
 	protected $fileSizes = [];
-
-	/**
-	 * Stores the allowed files extensions.
-	 *
-	 * @var array
-	 */
-	protected $allowedExtensions = ['jpg', 'png'];
-
-	/**
-	 * Stores the maximum allowed size to upload.
-	 *
-	 * @var integer
-	 */
-	protected $maxSize = null;
-
-	/**
-	 * Stores all custom error messages.
-	 *
-	 * @var array
-	 */
-	protected $customErrorMessages = [];
 
 	/**
 	 * Stores the successful uploads.
@@ -252,61 +203,13 @@ class Upload implements UploadInterface
 	}
 
 	/**
-	 * Get the extentions of the files.
-	 *
-	 * @return array
+	 * Retrieve the validator.
+	 * 
+	 * @return \Reich\Interfaces\Validator
 	 */
-	protected function getFileExtensions(): array
+	public function validator(): Validator
 	{
-		$extensions = [];
-
-		foreach ($this->fileNames as $filename) {
-			$str = explode('.', $filename);
-			$str = end($str);
-			$extension = strtolower($str);
-			$extensions[] = $extension;
-		}
-
-		return $extensions;
-	}
-
-	/**
-	 * Allows to set rules 
-	 * for the upload process.
-	 *
-	 * @param array | $rules
-	 * @return $this
-	 */
-	public function addRules(array $rules): UploadInterface
-	{
-        $this->validator->setRules($rules);
-        
-        return $this;
-	}
-
-	/**
-	 * Allows the to set custom error messages.
-	 *
-	 * @param array | $errorMessages
-	 * @return void
-	 */
-	public function customErrorMessages(array $errorMessages): void
-	{
-		foreach ($errorMessages as $ruleName => $customMessage)
-		{
-			switch ($ruleName)
-			{
-				case 'size':
-					$this->customErrorMessages[$ruleName] = $customMessage;
-					break;
-				case 'extensions':
-					$this->customErrorMessages[$ruleName] = $customMessage;
-					break;
-				default:
-					throw new InvalidRuleException;
-					break;
-			}
-		}
+		return $this->validator;
 	}
 
 	/**
@@ -427,105 +330,6 @@ class Upload implements UploadInterface
 		}
 
 		return move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['name']);
-	}
-
-	/**
-	 * Retrieves the allowed extensions.
-	 *
-	 * @return array
-	 */
-	public function getAllowedExtensions(): array
-	{
-		return ($this->allowedExtensions) ?: '';
-	}
-
-	/**
-	 * Retrieves the maximum uploading size.
-	 *
-	 * @return int
-	 */
-	public function getMaxUploadingSize(): int
-	{
-		return $this->maxSize;
-	}
-
-	/**
-	 * Checks if extensions allowed.
-	 *
-	 * @param array | $file
-	 * @return bool
-	 */
-	protected function extensionsAllowed(&$file): bool
-	{
-		if (empty($this->allowedExtensions) && empty($this->fileExtensions)) {
-			return true;
-		}
-
-		if (in_array($file['extension'], $this->allowedExtensions)) {
-			return true;
-		}
-
-		$file['error'] = 1;
-		$file['success'] = false;
-		$file['errorMessage'] = ($this->hasCustomMessage('extensions')) ? $this->customErrorMessages['extensions']
-																		: $this->defaultErrorMessage('extensions');
-		return false;
-	}
-
-	/**
-	 * Checks if there are custom message by type.
-	 *
-	 * @param string | $type
-	 * @return bool
-	 */
-	protected function hasCustomMessage($type): bool
-	{
-		return isset($this->customErrorMessages[$type]);
-	}
-
-	/**
-	 * Checks if the file size allowed.
-	 *
-	 * @param array | $file
-	 * @return bool
-	 */
-	protected function maxSizeOk($file): bool
-	{
-		if (empty($this->fileSizes)) {
-			return true;
-		}
-
-		if (empty($this->maxSize)) {
-			return true;
-		}
-
-		if ($file['size'] < ($this->maxSize * 1000)) {
-			return true;
-		}
-
-		$file['errorMessage'] = ($this->hasCustomMessage('size')) ? $this->customErrorMessages['size']
-																  : $this->defaultErrorMessage('size', $file);
-
-		return false;
-	}
-
-	/**
-	 * Retrieves a default error message.
-	 *
-	 * @param string | $type
-	 * @param array | $file
-	 * @return string
-	 */
-	protected function defaultErrorMessage($type, $file = null): string
-	{
-		switch ($type) {
-			case 'size':
-				return "Sorry, but your file, " . $file['name'] . ", is too big. maximal size allowed " . $this->maxSize . " Kbyte";
-			case 'extensions':
-				return "Sorry, but only " . implode( ", " , $this->allowedExtensions ) . " files are allowed.";
-		}
-
-		return '';
 	}
 
 	/**
