@@ -8,8 +8,6 @@ if (Upload::submitted()) {
   // give the constructor the name of the html input field
   $upload = Upload::picture('file');
 
-  $upload->loadConfig();
-
   $upload->async(true);
 
   $upload->setDirectory('images')->create(true);
