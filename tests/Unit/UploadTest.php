@@ -76,7 +76,7 @@ class UploadTest extends TestCase
 	{
 		$_FILES = $this->fileGenerator->single('file');
 
-		$upload = new Upload('file');
+		$upload = Upload::file('file');
 
 		$fileName = $_FILES['file']['name'][0];
 

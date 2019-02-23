@@ -14,44 +14,40 @@ trait Encrypter
 	protected $key = 'fc01e8d00a90c1d392ec45459deb6f12';
 
 	/**
-	 * Stores the file types that should be encrypted.
+	 * Store the file types that should be encrypted.
 	 *
 	 * @var array
 	 */
 	protected $fileTypesToEncrypt = [];
 
 	/**
-	 * Encrypts the file name.
+	 * Encrypt the file name.
 	 *
-	 * @param string | $fileName
+	 * @param string  $fileName
 	 * @return string
 	 */
-	public function encrypt($fileName)
+	public function encrypt(string $fileName): string
 	{
 	    $encryptMethod = "AES-256-CBC";
 
-	    if (! empty($this->config) && ! empty($this->config['encryption_key'])) {
-	    	$this->key = $this->config['encryption_key'];
-	    }
+		$key = $this->config->get('encryption_key');
 
-	    return @base64_encode(openssl_encrypt($fileName, $encryptMethod, $this->key));
+	    return @base64_encode(openssl_encrypt($fileName, $encryptMethod, $key));
 	}
 
 	/**
-	 * Decrypts the file name.
+	 * Decrypt the file name.
 	 *
-	 * @param string | $fileName
+	 * @param string  $fileName
 	 * @return string
 	 */
-	public function decrypt($fileName)
+	public function decrypt(string $fileName): string
 	{
 		$encryptMethod = "AES-256-CBC";
 
-		if (! empty($this->config) && ! empty($this->config['encryption_key'])) {
-	    	$this->key = $this->config['encryption_key'];
-	    }
+		$key = $this->config->get('encryption_key');
 
-		return openssl_decrypt(@base64_decode($fileName), $encryptMethod, $this->key);
+		return openssl_decrypt(@base64_decode($fileName), $encryptMethod, $key);
 	}
 
 	/**
