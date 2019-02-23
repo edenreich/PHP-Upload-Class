@@ -187,7 +187,6 @@ class Upload implements UploadInterface
 	 *  - Input
 	 *  - Validator
 	 *  - Request
-	 *  - Files
 	 *
 	 * @param \Reich\Classes\Input  $input
 	 * @param \Reich\Classes\Validator  $validator
