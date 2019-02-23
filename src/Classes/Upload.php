@@ -107,13 +107,6 @@ class Upload implements UploadInterface
 	protected $maxSize = null;
 
 	/**
-	 * If the upload is multiple files.
-	 *
-	 * @var bool
-	 */
-	protected $isMultiple = false;
-
-	/**
 	 * Stores all custom error messages.
 	 *
 	 * @var array
@@ -219,21 +212,6 @@ class Upload implements UploadInterface
 		$this->config->set('async', $flag);
 
 		return $this;
-	}
-
-	/**
-	 * Checks if its files or file.
-	 *
-	 * @param string | $input
-	 * @return bool
-	 */
-	protected function isMultiple($input): bool
-	{
-		if (is_array($_FILES[$input]['name']) && count($_FILES[$input]['name']) > 1) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
