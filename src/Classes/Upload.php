@@ -203,22 +203,12 @@ class Upload implements UploadInterface
 		$this->validator = $validator;
 		$this->request = $request;
 		$this->files = $input->getFiles();
-
-
-		// $this->fileInput = $_FILES[$input];
-		// $this->isMultiple = $this->isMultiple($input);
-		// $this->fileNames = $this->fileInput['name'];
-		// $this->fileTypes = $this->fileInput['type'];
-		// $this->fileTempNames = $this->fileInput['tmp_name'];
-		// $this->fileErrors = $this->fileInput['error'];
-		// $this->fileSizes = $this->fileInput['size'];
-		// $this->fileExtensions = $this->getFileExtensions();
 	}
 
 	/**
 	 * Setter for async upload.
 	 *
-	 * @param bool | $flag
+	 * @param bool  $flag
 	 * @return $this
 	 */
 	public function async($flag = true): UploadInterface
@@ -262,7 +252,7 @@ class Upload implements UploadInterface
 	 * want to upload the files(if not specfied,
 	 * files will be uploaded to the current directory).
 	 *
-	 * @param string | $path
+	 * @param string  $path
 	 * @return $this
 	 */
 	public function setDirectory($path): UploadInterface
@@ -300,7 +290,9 @@ class Upload implements UploadInterface
 	 */
 	public function addRules(array $rules): UploadInterface
 	{
-		$this->validator->setRules($rules);
+        $this->validator->setRules($rules);
+        
+        return $this;
 	}
 
 	/**
