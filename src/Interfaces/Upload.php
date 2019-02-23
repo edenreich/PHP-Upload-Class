@@ -13,14 +13,6 @@ interface Upload
 	public function async($flag = true): Upload;
 
 	/**
-	 * Loads a config file instead.
-	 *
-	 * @param string | $path
-	 * @return void
-	 */
-	public function loadConfig($path = ''): void;
-
-	/**
 	 * Sets the directory path where you 
 	 * want to upload the files(if not specfied,
 	 * files will be uploaded to the current directory).
