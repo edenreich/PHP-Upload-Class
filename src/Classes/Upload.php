@@ -216,7 +216,7 @@ class Upload implements UploadInterface
 	 */
 	public function async($flag = true): UploadInterface
 	{
-		$this->request->async($flag);
+		$this->config->set('async', $flag);
 
 		return $this;
 	}
