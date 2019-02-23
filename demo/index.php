@@ -3,6 +3,8 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Reich\Upload;
+use Reich\Types\Rule;
+use Reich\Types\MimeType;
 
 if (Upload::submitted()) {
     
@@ -12,6 +14,9 @@ if (Upload::submitted()) {
     $upload->async(true);
 
     $upload->setDirectory('images')->create(true);
+
+	// Upload::picutre() is already setting this by default, feel free to override this
+    // $validator->setRule(Rule::MimeTypes, [ MimeType::JPG, MimeType::PNG ]);
 
     $upload->encryptFileNames(true)->only('png');
 
