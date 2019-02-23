@@ -222,20 +222,6 @@ class Upload implements UploadInterface
 	}
 
 	/**
-	 * Loads a config file instead.
-	 *
-	 * @param string | $path
-	 * @return void
-	 */
-	public function loadConfig($path = ''): void
-	{
-		$path = rtrim($path, '/');
-
-		$this->config = require $path ?: __DIR__ . '/../config/upload.php';
-		$this->request->setConfig($this->config);
-	}
-
-	/**
 	 * Checks if its files or file.
 	 *
 	 * @param string | $input
