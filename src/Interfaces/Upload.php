@@ -23,6 +23,14 @@ interface Upload
 	public function setDirectory($path): Upload;
 
 	/**
+	 * Create the directory if not exists.
+	 * 
+	 * @param bool|null  $create
+	 * @return void
+	 */
+	public function create(?bool $create = null): void;
+
+	/**
 	 * Allows to set rules 
 	 * for the upload process.
 	 *
@@ -45,14 +53,6 @@ interface Upload
 	 * @return void
 	 */
 	public function start();
-
-	/**
-	 * Creates the directory if not exists.
-	 * 
-	 * @param bool | $create
-	 * @return void
-	 */
-	public function create($create = false): void;
 
 	/**
 	 * Retrieves the allowed extensions.

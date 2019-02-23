@@ -85,14 +85,6 @@ class Upload implements UploadInterface
 	protected $fileSizes = [];
 
 	/**
-	 * Stores the path of the upload folder.
-	 * by default will be uploaded to root.
-	 *
-	 * @var array
-	 */
-	protected $directoryPath = '/';
-
-	/**
 	 * Stores the allowed files extensions.
 	 *
 	 * @var array
@@ -224,9 +216,39 @@ class Upload implements UploadInterface
 	 */
 	public function setDirectory($path): UploadInterface
 	{
-		$this->directoryPath = rtrim($path, '/');
+		$path = rtrim($path, '/');
+
+		$disks = $this->config->get('disks');
+
+		$disks['local']['path'] = $path;
+
+		$this->config->set('disks', $disks);
 
 		return $this;
+	}
+
+	/**
+	 * Create the directory if not exists.
+	 * 
+	 * @param bool|null  $create
+	 * @return void
+	 */
+	public function create(?bool $create = null): void
+	{
+		$disks = $this->config->get('disks');
+		$create = $create ?? $disks['local']['create'];
+
+		if ($create == false) {
+			return;
+		}
+
+		$path = $disks['local']['path'];
+
+		if (! file_exists($path)) {
+			if (! @mkdir($path, 0777, true)) {
+				throw new PermissionDeniedException;
+			}
+		}
 	}
 
 	/**
@@ -405,25 +427,6 @@ class Upload implements UploadInterface
 		}
 
 		return move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['name']);
-	}
-
-	/**
-	 * Creates the directory if not exists.
-	 * 
-	 * @param bool | $create
-	 * @return void
-	 */
-	public function create($create = false): void
-	{
-		if ($create == false) {
-			return;
-		}
-
-		if (! file_exists($this->directoryPath)) {
-			if (! @mkdir($this->directoryPath, 0777, true)) {
-				throw new PermissionDeniedException;
-			}
-		}
 	}
 
 	/**

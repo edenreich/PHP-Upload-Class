@@ -5,24 +5,25 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Reich\Upload;
 
 if (Upload::submitted()) {
-  // give the constructor the name of the html input field
-  $upload = Upload::picture('file');
+    
+    // give the constructor the name of the html input field
+    $upload = Upload::picture('file');
 
-  $upload->async(true);
+    $upload->async(true);
 
-  $upload->setDirectory('images')->create(true);
+    $upload->setDirectory('images')->create(true);
 
-  $upload->encryptFileNames(true)->only('png');
+    $upload->encryptFileNames(true)->only('png');
 
-  $upload->start();
+    $upload->start();
 
-  $upload->success(function($file) {
-    // handle successful uploads.
-  });
+    $upload->success(function($file) {
+        // handle successful uploads.
+    });
 
-  $upload->error(function($file) {
-    // handle faliure uploads.
-  });
+    $upload->error(function($file) {
+        // handle faliure uploads.
+    });
 }
 
 ?><!DOCTYPE html>
