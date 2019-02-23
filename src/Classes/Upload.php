@@ -219,11 +219,11 @@ class Upload implements UploadInterface
 	 */
 	public function start(): void
 	{
-		if (empty($this->fileInput)) {
+		if ($this->input->isEmpty()) {
 			return;
 		}
 
-		if (! file_exists($this->directoryPath)) {
+		if (! file_exists($this->config->get('disks')['local']['path'])) {
 			throw new FolderNotExistException;
 		}
 

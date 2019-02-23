@@ -64,7 +64,7 @@ class UploadTest extends TestCase
 	{
 		$_FILES = $this->fileGenerator->single('file');
 
-		$upload = new Upload('file');
+		$upload = Upload::file('file');
 
 		$upload->setDirectory('invalid/directory/path');
 
