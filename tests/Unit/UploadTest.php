@@ -6,6 +6,7 @@ use Reich\Upload;
 
 use Tests\TestCase;
 use Tests\Unit\Helpers\FileGenerator;
+use Reich\Types\Rule;
 
 class UploadTest extends TestCase
 {
@@ -46,11 +47,11 @@ class UploadTest extends TestCase
 	{
 		$_FILES = $this->fileGenerator->single('file');
 
-		$upload = new Upload('file');
+		$upload = Upload::file('file');
 
-		$upload->addRules([
-		        'size' => 2000,
-		        'extensions' => 'png|jpg|pdf',
+		$upload->validator()->setRules([
+		        Rule::Size => 2000,
+		        Rule::Extensions => 'png|jpg|pdf',
 		        'notexist' => 'somevalue',
 		]);
 	}

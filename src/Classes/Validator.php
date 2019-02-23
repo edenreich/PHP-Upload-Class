@@ -2,11 +2,15 @@
 
 namespace Reich\Classes;
 
+// Types
 use Reich\Types\Rule;
 
+// Interfaces
 use Reich\Interfaces\Input;
 use Reich\Interfaces\Validator as ValidatorInterface;
-use Prophecy\Exception\InvalidArgumentException;
+
+// Exceptions
+use Reich\Exceptions\InvalidRuleException;
 
 class Validator implements ValidatorInterface
 {
@@ -101,10 +105,10 @@ class Validator implements ValidatorInterface
      * Setter for a validation rule.
      * 
      * @param string $rule
-     * @param array $values
+     * @param mixed $values
      * @return \Reich\Interfaces\Validator
      */
-    public function setRule(string $rule, array $values): ValidatorInterface
+    public function setRule(string $rule, $values): ValidatorInterface
     {
         switch ($rule) {
             case Rule::Size:
