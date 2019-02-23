@@ -2,13 +2,16 @@
 
 namespace Reich;
 
+// Classes
 use Reich\Classes\Input;
 use Reich\Classes\Validator;
 use Reich\Classes\Request;
 use Reich\Classes\Upload as UploadClass;
 
+// Interfaces
 use Reich\Interfaces\UploadInterface;
 
+// Types
 use Reich\Types\Rule;
 use Reich\Types\MimeType;
 use Reich\Types\Extension;
@@ -20,9 +23,9 @@ class Upload
      * 
      * @param string  $name
      * @param array  $rules
-     * @return \Reich\Interfaces\UploadInterface
+     * @return \Reich\Classes\UploadClass
      */
-    public static function picture(string $name, array $rules = []): UploadInterface
+    public static function picture(string $name, array $rules = []): UploadClass
     {
         $input = new Input($name);
         $validator = new Validator($input, $rules);
@@ -39,9 +42,9 @@ class Upload
      * 
      * @param string  $name
      * @param array  $rules
-     * @return \Reich\Interfaces\UploadInterface
+     * @return \Reich\Classes\UploadClass
      */
-    public static function file(string $name, array $rules = []): UploadInterface
+    public static function file(string $name, array $rules = []): UploadClass
     {
         $input = new Input($name);
         $validator = new Validator($input, $rules);
