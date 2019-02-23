@@ -142,13 +142,6 @@ class Upload implements UploadInterface
 	protected $FTPConnection = null;
 
 	/**
-	 * Stores the configurations.
-	 *
-	 * @var array
-	 */
-	protected $config = [];
-
-	/**
 	 * Debug informations.
 	 *
 	 * @var array
@@ -156,21 +149,28 @@ class Upload implements UploadInterface
 	private $_debug = [];
 
 	/**
-	 * Stores the input.
+	 * Store the config.
+	 * 
+	 * @var \Reich\Interfaces\Config
+	 */
+	private $config;
+
+	/**
+	 * Store the input.
 	 * 
 	 * @var \Reich\Interfaces\Input
 	 */
 	private $input;
 
 	/**
-	 * Stores the validator.
+	 * Store the validator.
 	 * 
 	 * @var \Reich\Interfaces\Validator
 	 */
 	private $validator;
 
 	/**
-	 * Stores the request.
+	 * Store the request.
 	 *
 	 * @var \Reich\Classes\Request
 	 */
@@ -201,6 +201,7 @@ class Upload implements UploadInterface
 			return;
 		}
 
+		$this->config = $config;
 		$this->input = $input;
 		$this->validator = $validator;
 		$this->request = $request;
