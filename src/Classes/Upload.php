@@ -36,27 +36,6 @@ class Upload implements UploadInterface
 	use Encrypter, EventListeners;
 
 	/**
-	 * Stores the uploaded source input.
-	 *
-	 * @var array
-	 */
-	protected $fileInput = [];
-
-	/**
-	 * Stores all the file errors.
-	 *
-	 * @var array
-	 */
-	protected $fileErrors = [];
-
-	/**
-	 * Stores all the file sizes.
-	 *
-	 * @var array
-	 */
-	protected $fileSizes = [];
-
-	/**
 	 * Stores the successful uploads.
 	 *
 	 * @var array
@@ -76,13 +55,6 @@ class Upload implements UploadInterface
 	 * @var resource
 	 */
 	protected $FTPConnection = null;
-
-	/**
-	 * Debug informations.
-	 *
-	 * @var array
-	 */
-	private $_debug = [];
 
 	/**
 	 * Store the config.
