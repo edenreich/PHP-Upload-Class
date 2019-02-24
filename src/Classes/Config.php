@@ -18,7 +18,7 @@ class Config implements ConfigInterface
      */
     public function __construct()
     {
-        $this->file = require (__DIR__.'/../config/upload.php');
+        $this->loadFrom(__DIR__.'/../config/upload.php');
     }
 
     /**
@@ -52,5 +52,16 @@ class Config implements ConfigInterface
     public function all(): array
     {
         return $this->file;
+    }
+
+    /**
+     * Load configurations by given file path.
+     * 
+     * @param string  $path
+     * @return void 
+     */
+    public function loadFrom(string $path): void
+    {
+        $this->file = require ($path);
     }
 }

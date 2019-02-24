@@ -27,4 +27,12 @@ interface Config
      * @return array
      */
     public function all(): array;
+    
+    /**
+     * Load configurations by given file path.
+     * 
+     * @param string  $path
+     * @return void 
+     */
+    public function loadFrom(string $path): void;
 }
