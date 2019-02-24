@@ -227,16 +227,24 @@ class Upload implements UploadInterface
 			throw new FolderNotExistException;
 		}
 
-		if (! empty($this->config) && $this->config['protocols']['default'] == 'ftp') {
-			$this->upload(true);
+		$files = $this->input->getFiles();
+
+		if ($this->validator->fails()) {
+			$errors = $this->validator->errors();
+			// @todo display the error messages
+			return;
 		}
 
-		// This block will be skipped if User-Agent is Curl.
-		if ($this->request->shouldBeAsync() && $this->request->header('User-Agent') != 'Curl') {
-			$this->uploadAsync();
-		} else {
-			$this->upload();
+		if ($this->config->get('protocols')['default'] == 'http') {
+			$this->uploadUsingHTTP($files);
 		}
+
+		if ($this->config->get('protocols')['default'] == 'ftp') {
+			$this->uploadUsingFTP($files);
+		}
+
+		$this->invokeErrorCallback();
+		$this->invokeSuccessCallback();
 	}
 
 	/**
@@ -263,49 +271,47 @@ class Upload implements UploadInterface
 	}
 
 	/**
-	 * Process the files or file and upload them.
+	 * Uploads a file using http protocol.
 	 *
-	 * @param bool | $ftp
-	 * @return bool
+	 * @param array<File>  $file
+	 * @return void
 	 */
-	protected function upload($ftp = false): bool
+	protected function uploadUsingHTTP(array $files): void
 	{
-		foreach ($this->files as $key => &$file) {
-			if ($this->fileIsNotValid($file)) {
-				$file['success'] = false;
+		foreach ($files as $file) {
+			if ($file->isNotValid()) {
+				$file->failed();
+				$this->failureUploads[] = $file;
 	    		continue;
-	    	}
-
-			if ($ftp === true) {
-				$uploaded = $this->uploadUsingFtp($file);
-			} else {
-				$uploaded = $this->uploadUsingHttp($file);
 			}
 
+			$uploaded = move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['name']);
+
 			if ($uploaded) {
-				$file['success'] = true;
+				$file->succeed();
 				$this->successfulUploads[] = $file;
 			} else {
-				$file['success'] = false;
+				$file->failed();
 				$this->failureUploads[] = $file;
 			}
 		}
 
-		// Once all files were uploaded, close the connection.
-		if ($ftp) {
-			ftp_close($this->FTPConnection);
-		}
+		// if ($this->request->shouldBeAsync() && $this->request->header('User-Agent') != 'Curl') {
+		// 	$this->uploadAsync();
+		// } else {
+		// 	$this->upload();
+		// }
 	}
 
 	/**
 	 * Uploads a file using ftp protocol.
 	 *
-	 * @param array | $file
+	 * @param array<File>  $file
 	 * @return bool
 	 */
-	protected function uploadUsingFtp(&$file): bool
+	protected function uploadUsingFTP(array $files): void
 	{
-		$config = $this->config['protocols']['ftp'];
+		$config = $this->config->get('protocols')['ftp'];
 
 		if (is_null($this->FTPConnection)) {
 			$this->FTPConnection = ftp_connect($config['host'], $config['port']) or die('Could not connect to FTP server!');
@@ -314,22 +320,9 @@ class Upload implements UploadInterface
 			ftp_pasv($this->FTPConnection, true);
 		}
 
-		return ftp_put($this->FTPConnection, $file['name'], $file['tmp_name'], FTP_BINARY);
-	}
+		ftp_put($this->FTPConnection, $file['name'], $file['tmp_name'], FTP_BINARY);
 
-	/**
-	 * Uploads a file using http protocol.
-	 *
-	 * @param array | $file
-	 * @return bool
-	 */
-	protected function uploadUsingHttp(&$file): bool
-	{
-		if ($this->shouldBeEncrypted($file)) {
-			return move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['encrypted_name']);
-		}
-
-		return move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['name']);
+		ftp_close($this->FTPConnection);
 	}
 
 	/**

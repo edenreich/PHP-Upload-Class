@@ -14,7 +14,7 @@ return [
 
     'protocols' => [
 
-        'default' => 'ftp',
+        'default' => 'http',
 
         'http' => [
             'port' => '80'
@@ -54,7 +54,7 @@ return [
 
     	'local' => [
             'create' => false,
-    		'path' => __DIR__.'/uploads'
+    		'path' => __DIR__.'/../uploads'
     	]
 
     ],

@@ -157,6 +157,18 @@ class File implements FileInterface
     }
 
     /**
+     * Indicates if the file
+     * is not valid / has no errors
+     * in errors array.
+     * 
+     * @return bool
+     */
+    public function isNotValid(): bool
+    {
+        return $this->getError() === 1 ? true : false;
+    }
+
+    /**
      * Retrieve the file error message.
      * 
      * @return string
@@ -175,6 +187,26 @@ class File implements FileInterface
     public function success(): bool
     {
         return $this->success;
+    }
+
+    /**
+     * Set success flag to false.
+     * 
+     * @return void
+     */
+    public function failed(): void
+    {
+        $this->success = false;
+    }
+
+    /**
+     * Set success flag to true.
+     * 
+     * @return void
+     */
+    public function succeed(): void
+    {
+        $this->success = true;
     }
 }
 	

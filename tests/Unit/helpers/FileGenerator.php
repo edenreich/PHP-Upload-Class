@@ -45,20 +45,20 @@ class FileGenerator
 	}
 
 	/**
-	 * Generates an invalid file.
+	 * Generates an invalid files.
 	 *
 	 * @param string  $inputName
 	 * @return array
 	 */
-	public function invalidFile(string $inputName): array
+	public function invalidFiles(string $inputName): array
 	{
 		return [
     		$inputName => [
-        		'name' => [],
+        		'name' => [$this->name(), $this->name()],
         		'type' => [$this->mimeType(), $this->mimeType()],
         		'size' => [$this->size(), $this->size()],
         		'tmp_name' => [$this->tempName(), $this->tempName()],
-        		'error' => [0,0]
+        		'error' => [1, 1]
     		]
     	];
 	}

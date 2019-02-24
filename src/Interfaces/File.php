@@ -54,6 +54,15 @@ interface File
     public function getError(): int;
 
     /**
+     * Indicates if the file
+     * is not valid / has no errors
+     * in errors array.
+     * 
+     * @return bool
+     */
+    public function isNotValid(): bool;
+
+    /**
      * Retrieve the file error message.
      * 
      * @return string
@@ -67,4 +76,18 @@ interface File
      * @return bool
      */
     public function success(): bool;
+
+    /**
+     * Set success flag to false.
+     * 
+     * @return void
+     */
+    public function failed(): void;
+
+    /**
+     * Set success flag to true.
+     * 
+     * @return void
+     */
+    public function succeed(): void;
 }

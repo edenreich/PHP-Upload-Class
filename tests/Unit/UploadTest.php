@@ -6,7 +6,12 @@ use Reich\Upload;
 
 use Tests\TestCase;
 use Tests\Unit\Helpers\FileGenerator;
+
+// Types
 use Reich\Types\Rule;
+
+// Interfaces
+use Reich\Interfaces\File;
 
 class UploadTest extends TestCase
 {
@@ -87,30 +92,26 @@ class UploadTest extends TestCase
 	}
 
 	/** @test */
-	public function error_method_is_being_called_every_time_an_file_has_a_failure()
+	public function error_method_is_being_called_every_time_a_file_has_a_failure()
 	{
 		static $callsCount = 0;
-		$_FILES = $this->fileGenerator->multiple('files');
+		
+		$_FILES = $this->fileGenerator->invalidFiles('files');
 
-		$upload = new Upload('files');
+		$upload = Upload::file('files');
 
-		$upload->start();
+		$dirPath = __DIR__ . '/tmp';
 
-		$upload->error(function($file) use (&$callsCount) {
+		$upload->setDirectory($dirPath)->create(true);
+
+		$upload->onError(function(File $file) use (&$callsCount) {
 			$callsCount++;
 		});
 
+		$upload->start();
+
 		$this->assertEquals(2, $callsCount);
-	}
 
-	/** @test */
-	public function can_load_the_configuration_file_correctly()
-	{
-		$_FILES = $this->fileGenerator->multiple('file');
-		$upload = new Upload('file');
-	
-		$config = $upload->loadConfig();
-
-		$this->assertArrayHasKey('encryption_key', $config);
+		rmdir($dirPath);
 	}
 }
