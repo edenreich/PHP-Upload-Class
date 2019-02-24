@@ -79,7 +79,7 @@ class Input implements InputInterface, Countable
      */
     public function isEmpty(): bool
     {
-        return $this->input === null ? true : false;
+        return count($this->input) === 0 ? true : false;
     }
 
     /**
