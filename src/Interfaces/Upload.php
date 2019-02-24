@@ -7,19 +7,9 @@ use Reich\Interfaces\Validator;
 interface Upload
 {
 	/**
-	 * Setter for async upload.
+	 * Set the directory path.
 	 *
-	 * @param bool | $flag
-	 * @return $this
-	 */
-	public function async($flag = true): Upload;
-
-	/**
-	 * Sets the directory path where you 
-	 * want to upload the files(if not specfied,
-	 * files will be uploaded to the current directory).
-	 *
-	 * @param string | $path
+	 * @param string  $path
 	 * @return $this
 	 */
 	public function setDirectory($path): Upload;
@@ -45,22 +35,6 @@ interface Upload
 	 * @return void
 	 */
 	public function start();
-
-	/**
-	 * Retrieves the errors array 
-	 * to give some feedback to the user.
-	 *
-	 * @return array
-	 */
-	public function errorFiles(): array;
-
-	/**
-	 * Retrieves the errors array 
-	 * to give some feedback to the user.
-	 *
-	 * @return array
-	 */
-	public function successFiles(): array;
 
 	/**
 	 * Checks if an upload 

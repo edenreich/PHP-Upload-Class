@@ -145,22 +145,7 @@ class Upload implements UploadInterface
 	}
 
 	/**
-	 * Setter for async upload.
-	 *
-	 * @param bool  $flag
-	 * @return $this
-	 */
-	public function async($flag = true): UploadInterface
-	{
-		$this->config->set('async', $flag);
-
-		return $this;
-	}
-
-	/**
-	 * Sets the directory path where you 
-	 * want to upload the files(if not specfied,
-	 * files will be uploaded to the current directory).
+	 * Set the directory path.
 	 *
 	 * @param string  $path
 	 * @return $this
@@ -248,29 +233,6 @@ class Upload implements UploadInterface
 	}
 
 	/**
-	 * Uploads the file asyncrounsly.
-	 *
-	 * @return bool
-	 */
-	protected function uploadAsync(): bool
-	{
-		foreach ($this->files as $key => &$file) {
-			if ($this->fileIsNotValid($file)) {
-				$file['success'] = false;
-	    		continue;
-	    	}
-
-	    	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-
-	    	// Registers each file for a separate request.
-			$this->request->register($url, $file);
-		}
-	
-		// Executes all request asyncrously.
-		$responses = $this->request->executeAll();
-	}
-
-	/**
 	 * Uploads a file using http protocol.
 	 *
 	 * @param array<File>  $file
@@ -323,77 +285,6 @@ class Upload implements UploadInterface
 		ftp_put($this->FTPConnection, $file['name'], $file['tmp_name'], FTP_BINARY);
 
 		ftp_close($this->FTPConnection);
-	}
-
-	/**
-	 * Retrieves the errors array 
-	 * to give some feedback to the user.
-	 *
-	 * @return array
-	 */
-	public function errorFiles(): array
-	{
-		$failedUploads = [];
-
-		foreach ($this->files as $key => $file) {
-			if ($file['success'] == true) {
-				continue;
-			}
-
-			$failedFile = new stdClass;
-
-			$failedFile->name = $file['name'];
-
-			if ($this->shouldBeEncrypted($file)) {
-				$failedFile->encryptedName = $file['encrypted_name'];
-			}
-
-			$failedFile->type = $file['type'];
-			$failedFile->extension = $file['extension'];
-			$failedFile->size = $file['size'];
-			$failedFile->error = $file['error'];
-
-			if (! empty($file['errorMessage'])) {
-				$failedFile->errorMessage = $file['errorMessage'];
-			}
-
-			$failedUploads[] = $failedFile;
-		}
-
-		return $failedUploads;
-	}
-
-	/**
-	 * Retrieves the errors array 
-	 * to give some feedback to the user.
-	 *
-	 * @return array
-	 */
-	public function successFiles(): array
-	{
-		$successfulUploads = [];
-
-		foreach ($this->files as $key => $file) {
-			if ($file['success'] == false) {
-				continue;
-			}
-
-			$successfulFile = new stdClass;
-
-			$successfulFile->name = $file['name'];
-
-			if ($this->shouldBeEncrypted($file)) {
-				$successfulFile->encryptedName = $file['encrypted_name'];
-			}
-
-			$successfulFile->type = $file['type'];
-			$successfulFile->extension = $file['extension'];
-			$successfulFile->size = $file['size'];
-
-			$successfulUploads[] = $successfulFile;
-		}
-
-		return $successfulUploads;
 	}
 
 	/**

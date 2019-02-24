@@ -2,6 +2,8 @@
 
 namespace Reich\Traits;
 
+use Reich\Interfaces\UploadInterface;
+
 trait AsyncRequest
 {
 	/**
@@ -28,12 +30,12 @@ trait AsyncRequest
 	/**
 	 * Setter for async upload.
 	 *
-	 * @param bool | $flag
+	 * @param bool  $flag
 	 * @return $this
 	 */
-	public function async($flag = true)
+	public function async($flag = true): UploadInterface
 	{
-		$this->async = $flag;
+		$this->config->set('async', $flag);
 
 		return $this;
 	}
@@ -119,5 +121,28 @@ trait AsyncRequest
 	    curl_multi_close($this->curlMultiHandle);
 
 	    return $responses;
+	}
+
+	/**
+	 * Uploads the file asyncrounsly.
+	 *
+	 * @return bool
+	 */
+	protected function uploadAsync(): bool
+	{
+		foreach ($this->files as $key => &$file) {
+			if ($this->fileIsNotValid($file)) {
+				$file['success'] = false;
+	    		continue;
+	    	}
+
+	    	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+
+	    	// Registers each file for a separate request.
+			$this->request->register($url, $file);
+		}
+	
+		// Executes all request asyncrously.
+		$responses = $this->request->executeAll();
 	}
 }
