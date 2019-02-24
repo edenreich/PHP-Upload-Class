@@ -23,6 +23,8 @@ class ConfigTest extends TestCase
     {
         $config = new Config;
 
+        $configurations = $config->all();
+
         $disks = $config->get('disks');
 
         $this->isTrue(is_array($configurations));
