@@ -2,8 +2,6 @@
 
 namespace Reich\Classes;
 
-use stdClass;
-
 // Classes
 use Reich\Classes\Request;
 
@@ -18,8 +16,6 @@ use Reich\Traits\Encrypter;
 use Reich\Traits\EventListeners;
 
 // Exceptions
-use InvalidArgumentException;
-use Reich\Exceptions\InvalidRuleException;
 use Reich\Exceptions\FolderNotExistException;
 use Reich\Exceptions\PermissionDeniedException;
 
