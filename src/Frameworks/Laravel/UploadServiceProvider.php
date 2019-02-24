@@ -27,7 +27,7 @@ class UploadServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '../config/upload.php' => config_path('upload.php'),
+            __DIR__ . '/../config/upload.php' => config_path('upload.php'),
         ]);
     }
 }
