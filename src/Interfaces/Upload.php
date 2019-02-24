@@ -47,20 +47,6 @@ interface Upload
 	public function start();
 
 	/**
-	 * Checks if the upload was unsuccessful.
-	 *
-	 * @return bool
-	 */
-	public function unsuccessfulFilesHas(): bool;
-
-	/**
-	 * Checks if the upload was successful.
-	 *
-	 * @return bool
-	 */
-	public function successfulFilesHas(): bool;
-
-	/**
 	 * Retrieves the errors array 
 	 * to give some feedback to the user.
 	 *
@@ -75,22 +61,6 @@ interface Upload
 	 * @return array
 	 */
 	public function successFiles(): array;
-
-	/**
-	 * Displays the errors 
-	 * nicely formated with bootstraps.
-	 *
-	 * @return void
-	 */
-	public function displayErrors(): void;
-
-	/**
-	 * Displays the errors 
-	 * nicely formated with bootstraps.
-	 *
-	 * @return void
-	 */
-	public function displaySuccess(): void;
 
 	/**
 	 * Checks if an upload 

@@ -5,31 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Reich\Upload;
 use Reich\Types\Rule;
 use Reich\Types\MimeType;
-
-if (Upload::submitted()) {
-    
-    // give the constructor the name of the html input field
-    $upload = Upload::picture('file');
-
-    $upload->async(true);
-
-    $upload->setDirectory('images')->create(true);
-
-	// Upload::picture() is already setting this by default, feel free to override this
-    // $upload->validator()->setRule(Rule::MimeTypes, [ MimeType::JPG, MimeType::PNG ]);
-
-    $upload->encryptFileNames(true)->only('png');
-
-    $upload->start();
-
-    $upload->success(function($file) {
-        // handle successful uploads.
-    });
-
-    $upload->error(function($file) {
-        // handle faliure uploads.
-    });
-}
+use Reich\Interfaces\File;
 
 ?><!DOCTYPE html>
 <html>
@@ -41,12 +17,28 @@ if (Upload::submitted()) {
 <?php
 
 if (Upload::submitted()) {
-  if ($upload->unsuccessfulFilesHas()) {
-    $upload->displayErrors();
-  }
-  elseif ($upload->successfulFilesHas()) {
-    $upload->displaySuccess();
-  }
+    
+    // give the constructor the name of the html input field
+    $upload = Upload::picture('file');
+
+    $upload->setDirectory('images')->create(true);
+
+	// Upload::picture() is already setting this by default, feel free to override this
+    // $upload->validator()->setRule(Rule::MimeTypes, [ MimeType::JPG, MimeType::PNG ]);
+
+    $upload->encryptFileNames(true)->only('png');
+
+	$upload->onSuccess(function(File $file) {
+		// handle successful uploads.
+		echo '<div class="alert alert-success">file ' . $file->getName() .' has been successfully uploaded!</div><br/>';
+    });
+
+    $upload->onError(function(File $file) {
+		// handle faliure uploads.
+		echo '<div class="alert alert-danger">couldn\'t upload ' . $file->getName() .'. '. $file->getErrorMessage() . '</div><br/>';
+    });
+
+    $upload->start();
 }
 
 ?>

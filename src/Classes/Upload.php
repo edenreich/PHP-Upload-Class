@@ -285,7 +285,7 @@ class Upload implements UploadInterface
 	    		continue;
 			}
 
-			$uploaded = move_uploaded_file($file['tmp_name'], $this->directoryPath.'/'.$file['name']);
+			$uploaded = move_uploaded_file($file->getTmpName(), $this->config->get('disks')['local']['path'].'/'.$file->getName());
 
 			if ($uploaded) {
 				$file->succeed();
@@ -323,60 +323,6 @@ class Upload implements UploadInterface
 		ftp_put($this->FTPConnection, $file['name'], $file['tmp_name'], FTP_BINARY);
 
 		ftp_close($this->FTPConnection);
-	}
-
-	/**
-	 * Checks if file validation fails.
-	 *
-	 * @param array | $file
-	 * @return bool
-	 */
-	protected function fileIsNotValid(&$file): bool
-	{
-		if ($file['error'] !== UPLOAD_ERR_OK) {
-	    	$this->_debug[] = 'The file ' . $file['name'] . ' couldn\'t be uploaded. Please ensure
-	    							your php.ini file allow this size of files to be uploaded';
-	    	$file['errorMessage'] = 'Invalid File: ' . $file['name'];
-	    	return false;
-	    }
-
-		if ($this->extensionsAllowed($file) && $this->maxSizeOk($file)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Checks if the upload was unsuccessful.
-	 *
-	 * @return bool
-	 */
-	public function unsuccessfulFilesHas(): bool
-	{
-		foreach ($this->files as $file) {
-			if ($file['success'] == false && ! empty($file['errorMessage'])) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the upload was successful.
-	 *
-	 * @return bool
-	 */
-	public function successfulFilesHas(): bool
-	{
-		foreach ($this->files as $file) {
-			if ($file['success'] == true) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -448,32 +394,6 @@ class Upload implements UploadInterface
 		}
 
 		return $successfulUploads;
-	}
-
-	/**
-	 * Displays the errors 
-	 * nicely formated with bootstraps.
-	 *
-	 * @return void
-	 */
-	public function displayErrors(): void
-	{
-		foreach ($this->errorFiles() as $file) {
-	      echo '<div class="alert alert-danger">couldn\'t upload ' . $file->name .'. '. $file->errorMessage . '</div><br/>';
-	    }
-	}
-
-	/**
-	 * Displays the errors 
-	 * nicely formated with bootstraps.
-	 *
-	 * @return void
-	 */
-	public function displaySuccess(): void
-	{
-		foreach ($this->successFiles() as $file) {
-	      echo '<div class="alert alert-success">' . $file->name .' uploaded successfuly</div><br/>';
-	    }
 	}
 
 	/**
