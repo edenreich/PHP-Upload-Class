@@ -22,10 +22,10 @@ interface Validator
      * Setter for a validation rule.
      * 
      * @param string $rule
-     * @param array $values
+     * @param mixed $values
      * @return \Reich\Interfaces\Validator
      */
-    public function setRule(string $rule, array $values): Validator;
+    public function setRule(string $rule, $values): Validator;
 
     /**
      * Setter for validation rules.
